@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "gdpr-app-by-awesoon-inc"
+client_id = "fc7bdfa96b7f797704c7b962cf263b29"
+application_url = "https://ti-beaches-candle-revolution.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://ti-beaches-candle-revolution.trycloudflare.com/auth/callback",
+  "https://ti-beaches-candle-revolution.trycloudflare.com/auth/shopify/callback",
+  "https://ti-beaches-candle-revolution.trycloudflare.com/api/auth/callback",
+  "https://ti-beaches-candle-revolution.trycloudflare.com/.shopify/graphiql/auth/callback"
+]
+
+[webhooks]
+api_version = "2023-10"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "ship131290.myshopify.com"
