@@ -18,7 +18,6 @@ export const loader = async ({ request }) => {
   const shop = admin.rest.session.shop;
   console.log(shop, '\n\n\n\n\n\n\n\n\n')
 
-
   const shopSettings = await prisma.ShopCountryView.findMany({
     where: { shopId: shop },
   });
@@ -64,7 +63,7 @@ export default function Index() {
                 step={0.01}
                 autoComplete="off"
               />
-              <input type="hidden" name="shopId" value={shopId} />
+              <input type="hidden" name="shopId" value={shopId.shop} />
               <Button primary submit disabled={isSubmitting}>
                 {isSubmitting ? 'Saving...' : 'Save Temperature'}
               </Button>
