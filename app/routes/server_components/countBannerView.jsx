@@ -16,10 +16,6 @@ export async function action({ request }) {
   let shopId = request.headers.get('x-shop-domain')
   let countryCode = geoData.countryCode;
 
-
-  // Get request geolocation
-
-
   if (geoData.error) {
     return json({ error: geoData.error });
   }
@@ -36,13 +32,12 @@ export async function action({ request }) {
   let shopCountryView;
 
   if (existingShopCountryView) {
-    // Make sure that the id of the existing record is correctly retrieved
+
     const existingViewId = existingShopCountryView.id;
 
-    // If the record exists, increment the view count
     shopCountryView = await prisma.ShopCountryView.update({
       where: {
-        id: existingViewId, // Use the retrieved id here
+        id: existingViewId,
       },
       data: {
         viewCount: {
@@ -51,7 +46,7 @@ export async function action({ request }) {
       },
     });
   } else {
-    // If it does not exist, create a new record with a view count of 1
+
     shopCountryView = await prisma.ShopCountryView.create({
       data: {
         shopId: shopId,
