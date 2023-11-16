@@ -5,7 +5,7 @@
 :root {
   --background-color: white;
   --box-shadow-color: 0 0 25px rgba(0, 0, 0, 0.3);
-  --banner-image-background: url("{{ block.settings.image_with_text_image | image_url: width: 1080 }}");
+  --banner-image-background: url("https://cloudfront-us-east-2.images.arcpublishing.com/reuters/YM4YFGPDLZMXZCKETHRSXEGZIY.jpg");
   --centered-text: center;
   --left-text: left;
   --transition-ease-in-out: .3s ease-in-out;
@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="{{ "popup.css" | asset_url }}">
 {% elsif block.settings.banner_css == 'top' %}
   <link rel="stylesheet" href="{{ "top_banner.css" | asset_url }}">
-{% else %}
+{% elsif block.settings.banner_css == 'bottom' %}
   <link rel="stylesheet" href="{{ "bottom_banner.css" | asset_url }}">
 {% endif %}
 

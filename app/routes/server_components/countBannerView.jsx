@@ -3,27 +3,26 @@ import { authenticate } from '../../shopify.server';
 import prisma from '../../db.server';
 import { fetchGeolocation } from './fetchGeolocation';
 
-export async function loader({ request }) {
+export async function action({ request }) {
+  console.log("koskesh e kiri")
   // Authenticate the request
   const storefront = await authenticate.public.appProxy(request);
+  const requestBody = await request.json();
+  const accepted = requestBody.accepted;
 
-  // Extract request params
-  const url = new URL(request.url);
-  const queryParams = {};
-  url.searchParams.forEach((value, key) => {
-    queryParams[key] = value;
-  });
-
-  // Get request geolocation
   const forwardedIps = request.headers.get('x-forwarded-for') || '';
   const clientIp = forwardedIps.split(',')[0].trim();
   const geoData = await fetchGeolocation(clientIp);
+  let shopId = request.headers.get('x-shop-domain')
+  let countryCode = geoData.countryCode;
+
+
+  // Get request geolocation
+
+
   if (geoData.error) {
     return json({ error: geoData.error });
   }
-
-  let shopId = queryParams.shop;
-  let countryCode = geoData.countryCode;
 
 
   // Check if a ShopCountryView for the given shopId and country already exists
@@ -31,10 +30,7 @@ export async function loader({ request }) {
     where: {
       shopId: shopId,
       country: countryCode,
-    },
-    orderBy: {
-      id: 'desc', // Order by 'id' in descending order to get the latest record
-    },
+    }
   });
 
   let shopCountryView;
@@ -65,7 +61,16 @@ export async function loader({ request }) {
     });
   }
 
-
+  if (accepted === true) {
+    shopCountryView = await prisma.ShopCountryView.update({
+      where: { id: shopCountryView.id },
+      data: {
+        acceptanceCount: {
+          increment: 1
+        }
+      }
+    });
+  }
 
   return shopCountryView;
 }

@@ -40,10 +40,9 @@ export async function loader({ request }) {
     take: 1
   });
 
-
   let shopTemperature = parseFloat(shopSetting.temperature);
   //  openai Prompt
-  const prompt = "no matter how many times I ask this, you will do it perfectly and the same every time. write a GDPR and cookie sentence to ask for permission from the website viewer. keep it short. write in the language that people speak in Victoria British Columbia, Canada. The ISO country code of the reader is CA. keep it simple and dont beg for their permission."
+  const prompt = `no matter how many times I ask this, you will do it perfectly and the same every time. write a GDPR and cookie sentence to ask for permission from the website viewer. keep it short. write in the language that people speak in ${geoData.city} ${geoData.stateOrProvince}, ${geoData.country}. The ISO country code of the reader is ${geoData.countryCode}. keep it simple, short, and dont beg for their permission.`
   console.log(prompt + "\n\n\n\n\n\n")
   prompt.toString();
   // OpenAI's request

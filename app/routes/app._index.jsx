@@ -38,10 +38,13 @@ export default function Index() {
   const handleTemperatureChange = (newValue) => {
     setTemperature(newValue);
   };
-  console.log(shopId.shopSettings)
+  console.log(shopId.shopSettings, "\n\n\n\n\n\n\n\n")
+
+
   const rows = shopId.shopSettings.map(view => [
     view.country,
     view.viewCount.toString(),
+    // view.acceptance.toString()
   ]);
 
 
