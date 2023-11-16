@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     wrapper.style.display = 'flex'
     setTimeout(function () {
       banner.style.opacity = '1'
-    }, 300)
+    }, 1000)
 
 
 
@@ -89,7 +89,49 @@ function fadeBanner() {
   banner.style.opacity = '0'
   setTimeout(function wrapperFade() {
     wrapper.style.display = 'none'
-  }, 1000)
+  }, 2000)
 }
 
-[acceptTerms, rejectTerms].forEach(element => element.addEventListener('click', fadeBanner));
+
+acceptTerms.addEventListener('click', async function () {
+
+  console.log("koskesh madar kharab")
+  // Send the information to the backend indicating acceptance
+  try {
+    const response = await fetch('/apps/cookie_ray_sma_fa/countAcceptance', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add any other necessary headers
+      },
+      body: JSON.stringify({ accepted: true })
+    });
+
+    // Handle the response here
+  } catch (error) {
+    console.error('Error:', error);
+  }
+  fadeBanner();
+});
+
+
+rejectTerms.addEventListener('click', async function () {
+
+
+  // Send the information to the backend indicating rejection
+  try {
+    const response = await fetch('/apps/cookie_ray_sma_fa/countAcceptance', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add any other necessary headers
+      },
+      body: JSON.stringify({ accepted: false })
+    });
+
+    // Handle the response here
+  } catch (error) {
+    console.error('Error:', error);
+  }
+  fadeBanner();
+});

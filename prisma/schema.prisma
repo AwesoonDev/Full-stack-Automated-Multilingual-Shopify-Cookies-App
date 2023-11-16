@@ -29,9 +29,10 @@ model ShopSettings {
 }
 
 model ShopCountryView {
-  id        Int          @id @default(autoincrement())
-  country   String // ISO country code
-  viewCount Int          @default(0)
-  shopId    String
-  shop      ShopSettings @relation(fields: [shopId], references: [shopId])
+  id              Int          @id @default(autoincrement())
+  country         String // ISO country code
+  viewCount       Int          @default(0)
+  acceptanceCount Int      @default(0) // New field to count acceptances
+  shopId          String
+  shop            ShopSettings @relation(fields: [shopId], references: [shopId])
 }

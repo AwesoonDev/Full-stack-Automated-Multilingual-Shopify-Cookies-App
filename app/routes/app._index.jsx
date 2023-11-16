@@ -6,12 +6,9 @@ import {
   TextField, DataTable
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
-import { fetchShopDetails } from "./server_components/fetchShopDetails";
-import { json } from '@remix-run/node';
 import { Form as RemixForm, useActionData, useLoaderData } from "@remix-run/react";
 import { useTransition, useState } from 'react';
 import { upsertShopDetails } from "./server_components/upsertShopDetails";
-
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -22,12 +19,13 @@ export const loader = async ({ request }) => {
     where: { shopId: shop },
   });
 
+
   return { shop, shopSettings }
 };
 
 
 export default function Index() {
-
+  let companyLogo = "https://chatup-demo.myshopify.com/cdn/shop/files/english.png?v=1693027883&width=180"
   const shopId = useLoaderData();
 
   upsertShopDetails(shopId.shop)
@@ -45,6 +43,10 @@ export default function Index() {
     view.country,
     view.viewCount.toString(),
   ]);
+
+
+
+
 
   return (
     <Page>
@@ -78,6 +80,8 @@ export default function Index() {
               headings={['Country', 'View Count']}
               rows={rows}
             />
+
+            <img id="companyLogoImage" src={companyLogo} alt="BigCo Inc. logo" />
           </Layout.Section>
         </Layout>
 

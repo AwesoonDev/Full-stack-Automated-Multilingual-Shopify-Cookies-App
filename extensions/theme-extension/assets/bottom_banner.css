@@ -1,0 +1,107 @@
+.awesoon-wrapper {
+  transition: var(--transition-ease-in-out);
+  -webkit-transition: var(--transition-ease-in-out);
+  -moz-transition: var(--transition-ease-in-out);
+  -o-transition: var(--transition-ease-in-out);
+  -ms-transition: var(--transition-ease-in-out);
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  display: none;
+  justify-content: center;
+  align-items: end;
+  box-sizing: border-box;
+  z-index: 899;
+
+}
+
+.awesoon-wrapper .top {
+  position: absolute;
+  top: 0;
+}
+
+.awesoon-wrapper .banner {
+  transition: var(--transition-ease-in-out);
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: clamp(200px, 100%, 100vw);
+  box-shadow: var(--box-shadow-color);
+  border-radius: 10px;
+  border: none;
+  z-index: 99;
+  position: relative;
+  background: var(--background-color);
+}
+
+.awesoon-wrapper .image-box {
+  width: 100%;
+  display: none;
+  border-radius: inherit;
+  background: var(--banner-image-background);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 7em;
+  position: relative;
+  top: 0;
+}
+
+.awesoon-wrapper .image-box::before {
+  position: absolute;
+  bottom: 0;
+  display: none;
+  content: " ";
+  width: 100%;
+  height: 15%;
+  background: linear-gradient(to top, white 1%, transparent 35%);
+}
+
+.awesoon-wrapper .ai-response {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  text-align: var(--left-text);
+  padding: 2em;
+}
+
+.awesoon-wrapper .buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 1em;
+  width: 100%;
+  padding: 2em;
+  position: relative;
+  z-index: 99;
+}
+
+.awesoon-wrapper .buttons button {
+  background: var(--button-background);
+  color: white;
+  width: 100%;
+  padding: 1em;
+  border-radius: 20px;
+  transition: var(--transition-ease-in-out);
+  -webkit-transition: var(--transition-ease-in-out);
+  -moz-transition: var(--transition-ease-in-out);
+  -o-transition: var(--transition-ease-in-out);
+  -ms-transition: var(--transition-ease-in-out);
+  border: none;
+  cursor: pointer;
+}
+
+.awesoon-wrapper .buttons button:nth-child(1) {
+  background: transparent;
+  color: #0f6efd;
+  border: 1px solid #0f6efd;
+}
+
+.awesoon-wrapper .buttons button:hover {
+  transform: var(--hover-button-scale);
+  opacity: .8;
+}

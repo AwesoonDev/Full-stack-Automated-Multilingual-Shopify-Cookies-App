@@ -22,7 +22,7 @@ module.exports = {
       route("/server_components/admin", "routes/server_components/admin.jsx");
       route("/fetchOpenAIResponse", "routes/server_components/visitor.jsx");
       route("/countBannerView", "routes/server_components/countBannerView.jsx");
-
+      route("/countAcceptance", "routes/server_components/countAcceptance.jsx");
     });
   }
 };

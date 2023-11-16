@@ -20,3 +20,4 @@ export async function fetchOpenAiResponse(shopTemperature, prompt) {
   return bannerContent
 
 }
+

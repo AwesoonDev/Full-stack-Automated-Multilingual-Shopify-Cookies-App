@@ -1,11 +1,52 @@
-<link rel="stylesheet" href="{{ "main.css" | asset_url }}">
-<script src="{{ "fade_banners.js" | asset_url }}" defer></script>
+
+{% style %}
+
+
+:root {
+  --background-color: white;
+  --box-shadow-color: 0 0 25px rgba(0, 0, 0, 0.3);
+  --banner-image-background: url("{{ block.settings.image_with_text_image | image_url: width: 1080 }}");
+  --centered-text: center;
+  --left-text: left;
+  --transition-ease-in-out: .3s ease-in-out;
+  --button-background: radial-gradient(#0f6efd 0%, #4892dc 100%);
+  --hover-button-scale: scale(0.99);
+}
+
+{% assign backgroundImage = block.settings.image_with_text_image | image_url: width: 1080 %}
+
+{% if backgroundImage %}
+  <style>
+    :root {
+      --banner-image-background: url("{{ backgroundImage }}");
+    }
+  </style>
+{% else %}
+  <style>
+    :root {
+      --banner-image-background: url("https://cloudfront-us-east-2.images.arcpublishing.com/reuters/YM4YFGPDLZMXZCKETHRSXEGZIY.jpg");
+    }
+  </style>
+{% endif %}
+
+{% endstyle %}
+
+
+
+{% if block.settings.banner_css == 'popup' %}
+  <link rel="stylesheet" href="{{ "popup.css" | asset_url }}">
+{% elsif block.settings.banner_css == 'top' %}
+  <link rel="stylesheet" href="{{ "top_banner.css" | asset_url }}">
+{% else %}
+  <link rel="stylesheet" href="{{ "bottom_banner.css" | asset_url }}">
+{% endif %}
+
+
+
 
     <div class="awesoon-wrapper">
       <div class="banner">
-        <div class="image-box">
-
-        </div>
+        <div class="image-box"> </div>
         <div class="ai-response">
           <span id="aiResponseBox"></span>
         </div>
@@ -16,162 +57,50 @@
       </div>
     </div>
 
-<script defer>
-let acceptTerms = document.querySelector('button.accept')
-let rejectTerms = document.querySelector('button.reject')
-let banner = document.querySelector('.awesoon-wrapper .banner')
-let wrapper = document.querySelector('.awesoon-wrapper')
-
-
-document.addEventListener('DOMContentLoaded', function () {
-  async function getSomething() {
-    // Check if the boolean is already set in localStorage and not expired
-    const cachedData = localStorage.getItem('cachedBoolean');
-    const expirationTime = localStorage.getItem('expirationTime');
-    const currentTime = new Date().getTime();
-
-    if (cachedData && expirationTime && currentTime < expirationTime) {
-      console.log("Cached data is still valid:", cachedData);
-      return;
-    }
-
-    const response = await fetch('/apps/cookie_ray_sma_fa/fetchOpenAIResponse', {
-      method: 'GET',
-    });
-    console.log(response)
-    console.log("koskesh madar jende")
-    const textResponse = await response.text();
-    const jsonResponse = JSON.parse(textResponse)
-
-    console.log("Full API Response:", textResponse + "\n\n\n\n\n");
-    console.log("Parsed JSON Response:", jsonResponse + "\n\n\n");
-
-
-    try {
-      // Extract the message content
-      const messageContent = jsonResponse.choices[0].message.content;
-      console.log("Extracted Message Content:", messageContent);
-
-      // Remove backslashes used for escaping in the JSON string
-      const cleanedContent = messageContent.replace(/\\/g, '');
-
-      // Populate the #aiResponseBox with the cleaned content
-      document.getElementById('aiResponseBox').textContent = cleanedContent;
-    } catch (error) {
-      // Log any errors
-      console.error("Error fetching or processing data:", error);
-    }
-
-
-
-
-    //fade the banner
-    wrapper.style.display = 'flex'
-    setTimeout(function () {
-      banner.style.opacity = '1'
-    }, 300)
-
-
-
-
-    // Cache the new data with an expiration time of 7 days
-    localStorage.setItem('cachedBoolean', textResponse);
-    const sevenDaysLater = new Date().getTime() + (7 * 24 * 60 * 60 * 1000);
-    localStorage.setItem('expirationTime', sevenDaysLater);
-
-
-
-    return jsonResponse;
-  }
-  async function countBannerView() {
-    const response = await fetch('/apps/cookie_ray_sma_fa/countBannerView');
-    try {
-      console.log("koskesh madar jende")
-      if (response.ok) {
-        const data = await response.json();
-        console.log("View Counter");
-      } else {
-        throw new Error('Unable to count');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-  countBannerView()
-  getSomething();
-});
-
-
-
-
-function fadeBanner() {
-  banner.style.opacity = '0'
-  setTimeout(function wrapperFade() {
-    wrapper.style.display = 'none'
-  }, 1000)
-}
-
-[acceptTerms, rejectTerms].forEach(element => element.addEventListener('click', fadeBanner));
-</script>
-
+<script src="{{ "fade_banner.js" | asset_url }}" defer></script>
  {% schema %}
       {
-        "name": "ChatUp - AI Live Chat",
+        "name": "Crumble | Cookie/GDPR",
         "target": "body",
         "settings": [
           {
+            "type": "select",
+            "id": "banner_css",
+            "label": "Banner Style",
+            "options": [
+              {
+                "value": "popup",
+                "label": "Pop-up Box"
+              },
+              {
+                "value": "bottom",
+                "label": "Bottom Banner"
+              },
+              {
+                "value": "top",
+                "label": "Hero Banner"
+              }
+            ],
+            "default": "popup"
+          }
+          ,{
+            "type": "image_picker",
+            "id": "image_with_text_image",
+            "label": "Banner Image"
+          },
+          {
             "type": "color",
-            "id": "icon_background_color",
-            "label": "ChatUp Button Background Color",
+            "id": "banner_background_color",
+            "label": "Background Color",
             "default": "#2c3c4c"
           },
           {
             "type": "color",
-            "id": "icon_fill",
-            "label": "Icon, Header & Close Button Color",
-            "default": "#ffffff"
-          },
-          {
-            "type": "range",
-            "id": "border_radius_range",
-            "min": 0,
-            "max": 40,
-            "step": 1,
-            "unit": "px",
-            "label": "Sharp or Round Corners?",
-            "default": 16
-          },
-          {
-            "type": "image_picker",
-            "id": "image_with_text_image",
-            "label": "Chat Operator's Image"
-          }, {
-            "type": "font_picker",
-            "id": "heading_font",
-            "label": "ChatUp's Font",
-            "default": "helvetica_n4"
-          }, {
-            "type": "inline_richtext",
-            "id": "inline",
-            "default": "How can I help you today?",
-            "label": "ChatUp Header Text"
-          },
-          {
-            "type": "select",
-            "id": "icon_alignment",
-            "label": "Icon Alignment",
-            "options": [
-              {
-                "value": "left",
-                "label": "Left"
-              },
-              {
-                "value": "right",
-                "label": "Right"
-              }
-            ],
-            "default": "right"
+            "id": "banner_text_color",
+            "label": "Text Color",
+            "default": "#080808"
           }
+          
         ]
       }
     {% endschema %}
