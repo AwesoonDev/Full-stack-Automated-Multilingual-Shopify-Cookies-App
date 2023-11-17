@@ -5,91 +5,115 @@ let wrapper = document.querySelector('.awesoon-wrapper')
 
 
 document.addEventListener('DOMContentLoaded', function () {
-  async function getSomething() {
-    // Check if the boolean is already set in localStorage and not expired
+
+  // Fetch and cache data
+  async function fetchAndCacheData() {
+    const response = await fetch('/apps/cookie_ray_sma_fa/fetchOpenAIResponse', { method: 'GET' });
+    const textResponse = await response.text();
+    cacheData(textResponse);
+    return JSON.parse(textResponse);
+  }
+
+  // Cache the data with an expiration time of 7 days
+  function cacheData(data) {
+    localStorage.setItem('cachedBoolean', data);
+    const sevenDaysLater = new Date().getTime() + (7 * 24 * 60 * 60 * 1000);
+    localStorage.setItem('expirationTime', sevenDaysLater);
+  }
+
+  // Get data from cache if available
+  function getCachedData() {
     const cachedData = localStorage.getItem('cachedBoolean');
     const expirationTime = localStorage.getItem('expirationTime');
     const currentTime = new Date().getTime();
 
     if (cachedData && expirationTime && currentTime < expirationTime) {
-      console.log("Cached data is still valid:", cachedData);
+      return JSON.parse(cachedData);
+    }
+    return null;
+  }
+
+  // Initialize and handle data
+  async function initializeData() {
+    const cachedData = getCachedData();
+    if (cachedData) {
+      processData(cachedData);
       return;
     }
 
-    const response = await fetch('/apps/cookie_ray_sma_fa/fetchOpenAIResponse', {
-      method: 'GET',
-    });
-    console.log(response)
-    console.log("koskesh madar jende")
-    const textResponse = await response.text();
-    const jsonResponse = JSON.parse(textResponse)
-
-    console.log("Full API Response:", textResponse + "\n\n\n\n\n");
-    console.log("Parsed JSON Response:", jsonResponse + "\n\n\n");
-
-
     try {
-      // Extract the message content
-      const messageContent = jsonResponse.choices[0].message.content;
-      console.log("Extracted Message Content:", messageContent);
-
-      // Remove backslashes used for escaping in the JSON string
-      const cleanedContent = messageContent.replace(/\\/g, '');
-
-      // Populate the #aiResponseBox with the cleaned content
-      document.getElementById('aiResponseBox').textContent = cleanedContent;
+      const data = await fetchAndCacheData();
+      processData(data);
     } catch (error) {
-      // Log any errors
       console.error("Error fetching or processing data:", error);
     }
-
-
-
-
-    //fade the banner
-    wrapper.style.display = 'flex'
-    setTimeout(function () {
-      banner.style.opacity = '1'
-    }, 300)
-
-
-
-
-    // Cache the new data with an expiration time of 7 days
-    localStorage.setItem('cachedBoolean', textResponse);
-    const sevenDaysLater = new Date().getTime() + (7 * 24 * 60 * 60 * 1000);
-    localStorage.setItem('expirationTime', sevenDaysLater);
-
-
-
-    return jsonResponse;
   }
-  async function countBannerView() {
-    const response = await fetch('/apps/cookie_ray_sma_fa/countBannerView');
+
+  // Process and display data
+  function processData(data) {
     try {
-      console.log("koskesh madar jende")
-      if (response.ok) {
-        const data = await response.json();
-        console.log("View Counter");
-      } else {
-        throw new Error('Unable to count');
-      }
+      // Extract and clean the message content
+      const messageContent = data.choices[0].message.content.replace(/\\/g, '').replace('"', '');
+      document.getElementById('aiResponseBox').textContent = messageContent;
+
+      // Display and animate the banner
+      fadeBannerIn();
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error processing data:", error);
     }
   }
-  countBannerView()
-  getSomething();
+
+  // Fade the banner in
+  function fadeBannerIn() {
+    wrapper.style.display = 'flex';
+    setTimeout(function () {
+      banner.style.opacity = '1';
+    }, 2000);
+  }
+
+
+  initializeData();
 });
 
+async function countBannerView(accepted = null) {
+  try {
+    const body = accepted !== null ? JSON.stringify({ accepted }) : null;
+    const response = await fetch('/apps/cookie_ray_sma_fa/countBannerView', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: body
+    });
 
+    if (response.ok) {
+      const data = await response.json();
+      console.log("View Counter", data);
+    } else {
+      throw new Error('Unable to count');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
 
 
 function fadeBanner() {
   banner.style.opacity = '0'
   setTimeout(function wrapperFade() {
     wrapper.style.display = 'none'
-  }, 1000)
+  }, 2000)
 }
 
-[acceptTerms, rejectTerms].forEach(element => element.addEventListener('click', fadeBanner));
+
+acceptTerms.addEventListener('click', async function () {
+  console.log("Accepted Terms");
+  await countBannerView(true);
+  fadeBanner();
+});
+
+rejectTerms.addEventListener('click', async function () {
+  console.log("Rejected Terms");
+  await countBannerView(false);
+  fadeBanner();
+});
