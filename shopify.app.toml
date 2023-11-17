@@ -2,7 +2,7 @@
 
 name = "gdpr-app-by-awesoon-inc"
 client_id = "fc7bdfa96b7f797704c7b962cf263b29"
-application_url = "https://phi-refrigerator-broken-advocacy.trycloudflare.com"
+application_url = "https://executives-harder-pursuant-shock.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,17 +11,17 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://phi-refrigerator-broken-advocacy.trycloudflare.com/auth/callback",
-  "https://phi-refrigerator-broken-advocacy.trycloudflare.com/auth/shopify/callback",
-  "https://phi-refrigerator-broken-advocacy.trycloudflare.com/api/auth/callback",
-  "https://phi-refrigerator-broken-advocacy.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://executives-harder-pursuant-shock.trycloudflare.com/auth/callback",
+  "https://executives-harder-pursuant-shock.trycloudflare.com/auth/shopify/callback",
+  "https://executives-harder-pursuant-shock.trycloudflare.com/api/auth/callback",
+  "https://executives-harder-pursuant-shock.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://phi-refrigerator-broken-advocacy.trycloudflare.com"
+url = "https://executives-harder-pursuant-shock.trycloudflare.com"
 subpath = "cookie_ray_sma_fa"
 prefix = "apps"
 
