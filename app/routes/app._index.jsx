@@ -7,7 +7,7 @@ import {
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import { Form as RemixForm, useActionData, useLoaderData } from "@remix-run/react";
-import { useTransition, useState, useEffect } from 'react';
+import { useTransition, useState } from 'react';
 import { upsertShopDetails } from "./server_components/upsertShopDetails";
 import stylesUrl from "~/styles/setup.css";
 import { useTypeWriterEffect } from "./ui_effects/intervallyTyped";
@@ -35,36 +35,18 @@ export default function Index() {
   const shopId = useLoaderData();
 
   upsertShopDetails(shopId.shop)
-  const [temperature, setTemperature] = useState('1');
-  const [showSaveBar, setShowSaveBar] = useState(false);
+  const [temperature, setTemperature] = useState('0');
   const transition = useTransition();
   const isSubmitting = transition.state === "submitting";
 
+  console.log("Loaded Data:", shopId);
 
-  useEffect(() => {
-    // Retrieve the saved temperature from local storage
-    const savedTemp = localStorage.getItem('temperature');
-    if (savedTemp) {
-      setTemperature(savedTemp);
-    }
-  }, []);
 
   const handleTemperatureChange = (newValue) => {
     setTemperature(newValue);
   };
   console.log(shopId.shopSettings, "\n\n\n\n\n\n\n\n")
 
-
-  const handleSave = () => {
-    // Form submit logic
-    setShowSaveBar(false);
-    // Add logic to submit the temperature value
-  };
-
-  const handleDiscard = () => {
-    // Logic to discard changes
-    setShowSaveBar(false);
-  };
 
   const rows = shopId.shopSettings.map(view => [
     <div style={{ display: 'flex', alignItems: 'center' }}>
