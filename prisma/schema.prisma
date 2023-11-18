@@ -23,7 +23,7 @@ model Session {
 
 model ShopSettings {
   id               Int               @id @default(autoincrement())
-  temperature      Float
+  temperature      Float             @default(0.25)
   shopId           String            @unique
   shopCountryViews ShopCountryView[]
 }
@@ -32,7 +32,7 @@ model ShopCountryView {
   id              Int          @id @default(autoincrement())
   country         String // ISO country code
   viewCount       Int          @default(0)
-  acceptanceCount Int      @default(0) // New field to count acceptances
+  acceptanceCount Int          @default(0) // New field to count acceptances
   shopId          String
   shop            ShopSettings @relation(fields: [shopId], references: [shopId])
 }

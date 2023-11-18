@@ -7,6 +7,7 @@
   justify-content: center;
   flex-direction: column;
   transition: .3s ease-in-out;
+  height: 21.45em;
 }
 
 .main-container h2 {
