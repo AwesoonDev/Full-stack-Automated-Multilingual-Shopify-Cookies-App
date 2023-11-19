@@ -1,16 +1,14 @@
 import {
   Page,
   Layout,
-  Button,
-  BlockStack,
-  TextField, DataTable, LegacyCard
+  DataTable, LegacyCard, ContextualSaveBar, Frame
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import { Form as RemixForm, useActionData, useLoaderData } from "@remix-run/react";
-import { useTransition, useState } from 'react';
+import { useTransition, useEffect, useState } from 'react';
 import { upsertShopDetails } from "./server_components/upsertShopDetails";
 import stylesUrl from "~/styles/setup.css";
-import { useTypeWriterEffect } from "./ui_effects/intervallyTyped";
+import { updateShopTemp } from "./server_components/updateShopTemp";
 
 export const links = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
@@ -19,33 +17,69 @@ export const links = () => {
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
   const shop = admin.rest.session.shop;
-  console.log(shop, '\n\n\n\n\n\n\n\n\n')
-
   const shopSettings = await prisma.ShopCountryView.findMany({
     where: { shopId: shop },
   });
 
+  const tempSettings = await prisma.ShopSettings.findFirst({ where: { shopId: shop } })
 
-  return { shop, shopSettings }
+  const temperature = tempSettings.temperature
+
+  return { shop, shopSettings, temperature }
 };
+
+
+export const action = async ({ request }) => {
+  const formData = await request.formData();
+  const temperatureValue = formData.get('temperature');
+  const shopId = formData.get('shopId');
+
+  console.log('Received temperature:', temperatureValue);
+  const temperature = parseFloat(temperatureValue);
+
+  if (!temperatureValue || !shopId) {
+    console.error('Missing fields');
+    return json({ error: 'Shop ID and temperature are required.' }, { status: 400 });
+  }
+
+  if (isNaN(temperature)) {
+    console.error('Invalid temperature value');
+    return json({ error: 'Invalid temperature value.' }, { status: 400 });
+  }
+
+  // Call your update function
+  const updateShopTempGo = await updateShopTemp(shopId, temperatureValue);
+  const updatedRecord = await prisma.shopSettings.findFirst({ where: { shopId } });
+  return updatedRecord;
+};
+
 
 
 export default function Index() {
   let companyLogo = "https://chatup-demo.myshopify.com/cdn/shop/files/english.png?v=1693027883&width=180"
   const shopId = useLoaderData();
-
   upsertShopDetails(shopId.shop)
-  const [temperature, setTemperature] = useState('0');
+  const loadedTemperature = shopId.temperature
+  const [temperature, setTemperature] = useState(loadedTemperature.toString());
   const transition = useTransition();
-  const isSubmitting = transition.state === "submitting";
 
-  console.log("Loaded Data:", shopId);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+
+  const handleRadioChange = (event) => {
+    setHasUnsavedChanges(true);
+    event.currentTarget.form.submit();
+  };
+
+  const handleDiscard = () => {
+    setHasUnsavedChanges(false);
+  };
 
 
   const handleTemperatureChange = (newValue) => {
     setTemperature(newValue);
+    setHasUnsavedChanges(true);
   };
-  console.log(shopId.shopSettings, "\n\n\n\n\n\n\n\n")
 
 
   const rows = shopId.shopSettings.map(view => [
@@ -55,94 +89,91 @@ export default function Index() {
     </div>,
     `${Math.round((view.acceptanceCount) * 100 / (view.viewCount))}%`
   ]);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const actionData = useActionData();
+
+  useEffect(() => {
+    if (actionData?.error) {
+      setError(actionData.error);
+    } else {
+      setSuccess('Temperature updated successfully.');
+    }
+  }, [actionData]);
 
 
-
-  // Empty dependency array to run only once after mount
   return (
-    <Page>
-      <Layout>
-        <Layout.Section>
-          <LegacyCard title="Banner Personality" sectioned>
+    <Frame>
+      {hasUnsavedChanges && (
+        <ContextualSaveBar
+          message="Unsaved changes"
+          saveAction={{
+            loading: false,
+            disabled: true, // Disabled because the form submits automatically
+          }}
+          discardAction={{
+            onAction: handleDiscard,
+          }}
+        />
+      )}
 
-
-            <div className="main-container">
-              <div className="radio-buttons">
-                <label className="custom-radio">
-                  <input type="radio" name="radio" defaultChecked />
-                  <span className="radio-btn">
-                    <i className="las la-check"></i>
-                    <div className="hobbies-icon">
-                      <div className="intervallyTyped" data-name="a">We use cookies to enhance your experience on our website. By continuing to browse, you agree to our use of cookies. For more information on how we...</div>
-                      <h3>Business Tone</h3>
-                    </div>
-                  </span>
-                </label>
-                <label className="custom-radio">
-                  <input type="radio" name="radio" defaultChecked />
-                  <span className="radio-btn">
-                    <i className="las la-check"></i>
-                    <div className="hobbies-icon">
-                      <div className="intervallyTyped" data-name="b">Just letting you know, we use cookies to make your experience on our site as awesome as possible. If you're okay with our delicious cookies, just keep browsing...</div>
-                      <h3>Personal Tone</h3>
-                    </div>
-                  </span>
-                </label>
-
-                {/* ... other radio options */}
-              </div>
-            </div>
-
-          </LegacyCard>
-        </Layout.Section>
-        <Layout.Section style={{ display: 'none' }} variant="oneThird">
-          <LegacyCard title="Acceptance Rate per Country" sectioned>
-
-            <DataTable
-              columnContentTypes={['text', 'numeric',]}
-              headings={['Country', 'Acceptance Rate']}
-              rows={rows}
-            />
-
-
-
-          </LegacyCard>
-        </Layout.Section>
-
-      </Layout>
-
-
-      <BlockStack gap="500">
-
+      <Page>
         <Layout>
           <Layout.Section>
-            <RemixForm action="/server_components/admin" method="post" encType="application/x-www-form-urlencoded">
-              <TextField
-                label="AI Temperature Setting"
-                type="number"
-                name="temperature"
-                value={temperature}
-                onChange={handleTemperatureChange}
-                min={0}
-                max={2}
-                step={0.01}
-                autoComplete="off"
-              />
-              <input type="hidden" name="shopId" value={shopId.shop} />
-              <Button primary submit disabled={isSubmitting}>
-                {isSubmitting ? 'Saving...' : 'Save Temperature'}
-              </Button>
-            </RemixForm>
-            {useActionData?.error && (
-              <p style={{ color: 'red' }}>{actionData.error}</p>
-            )}
+            <LegacyCard title="Banner Personality" sectioned>
+
+              <RemixForm method="post"
+                encType="application/x-www-form-urlencoded"
+                id="temperatureForm"
+                data-save-bar
+                onClick="console.log('Form submitted');">
+                <div className="main-container">
+                  <div className="radio-buttons" onChange={handleRadioChange}>
+                    <label className="custom-radio">
+                      <input type="radio" name="temperature" value="0.25" defaultChecked={temperature === "0.25"} />
+                      <span className="radio-btn">
+                        <i className="las la-check"></i>
+                        <div className="hobbies-icon">
+                          <div className="intervallyTyped" data-name="a">Just letting you know, we use cookies to make your experience on our site as awesome as possible. If you're okay with our delicious cookies, just keep browsing...</div>
+                          <h3>Personable Tone</h3>
+                        </div>
+                      </span>
+                    </label>
+                    <label className="custom-radio">
+                      <input type="radio" name="temperature" value="1.5" defaultChecked={temperature === "1.5"} />
+                      <span className="radio-btn">
+                        <i className="las la-check"></i>
+                        <div className="hobbies-icon">
+                          <div className="intervallyTyped" data-name="b">We use cookies to enhance your experience on our website. By continuing to browse, you agree to our use of cookies. For more information on how we...</div>
+                          <h3>Business Tone</h3>
+                        </div>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                <input type="hidden" name="shopId" value={shopId.shop} />
+              </RemixForm>
+
+            </LegacyCard>
           </Layout.Section>
+          <Layout.Section style={{ display: 'none' }} variant="oneThird">
+            <LegacyCard title="Acceptance Rate per Country" sectioned>
 
+              <DataTable
+                columnContentTypes={['text', 'numeric',]}
+                headings={['Country', 'Acceptance Rate']}
+                rows={rows}
+              />
+
+
+
+            </LegacyCard>
+          </Layout.Section>
         </Layout>
-
-      </BlockStack>
-
-    </Page>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {success && <p style={{ color: 'green' }}>{success}</p>}
+      </Page>
+    </Frame>
   );
-
 }
