@@ -113,7 +113,7 @@ export default function Index() {
                 encType="application/x-www-form-urlencoded"
                 id="temperatureForm"
                 data-save-bar
-                onClick="console.log('Form submitted');">
+                onClick="console.log('submit', new FormData(event.target)); event.preventDefault();">
                 <div className="main-container">
                   <div className="radio-buttons" onChange={handleRadioChange}>
                     <label className="custom-radio">
