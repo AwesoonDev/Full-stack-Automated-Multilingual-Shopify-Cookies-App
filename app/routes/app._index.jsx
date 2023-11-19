@@ -20,11 +20,8 @@ export const loader = async ({ request }) => {
   const shopSettings = await prisma.ShopCountryView.findMany({
     where: { shopId: shop },
   });
-
   const tempSettings = await prisma.ShopSettings.findFirst({ where: { shopId: shop } })
-
   const temperature = tempSettings.temperature
-
   return { shop, shopSettings, temperature }
 };
 
@@ -33,21 +30,17 @@ export const action = async ({ request }) => {
   const formData = await request.formData();
   const temperatureValue = formData.get('temperature');
   const shopId = formData.get('shopId');
-
   console.log('Received temperature:', temperatureValue);
   const temperature = parseFloat(temperatureValue);
-
   if (!temperatureValue || !shopId) {
     console.error('Missing fields');
     return json({ error: 'Shop ID and temperature are required.' }, { status: 400 });
   }
-
   if (isNaN(temperature)) {
     console.error('Invalid temperature value');
     return json({ error: 'Invalid temperature value.' }, { status: 400 });
   }
 
-  // Call your update function
   const updateShopTempGo = await updateShopTemp(shopId, temperatureValue);
   const updatedRecord = await prisma.shopSettings.findFirst({ where: { shopId } });
   return updatedRecord;
@@ -56,7 +49,6 @@ export const action = async ({ request }) => {
 
 
 export default function Index() {
-  let companyLogo = "https://chatup-demo.myshopify.com/cdn/shop/files/english.png?v=1693027883&width=180"
   const shopId = useLoaderData();
   upsertShopDetails(shopId.shop)
   const loadedTemperature = shopId.temperature
@@ -64,7 +56,6 @@ export default function Index() {
   const transition = useTransition();
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-
 
   const handleRadioChange = (event) => {
     setHasUnsavedChanges(true);
@@ -75,12 +66,10 @@ export default function Index() {
     setHasUnsavedChanges(false);
   };
 
-
   const handleTemperatureChange = (newValue) => {
     setTemperature(newValue);
     setHasUnsavedChanges(true);
   };
-
 
   const rows = shopId.shopSettings.map(view => [
     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -102,7 +91,6 @@ export default function Index() {
     }
   }, [actionData]);
 
-
   return (
     <Frame>
       {hasUnsavedChanges && (
@@ -117,12 +105,10 @@ export default function Index() {
           }}
         />
       )}
-
       <Page>
         <Layout>
           <Layout.Section>
             <LegacyCard title="Banner Personality" sectioned>
-
               <RemixForm method="post"
                 encType="application/x-www-form-urlencoded"
                 id="temperatureForm"
@@ -135,7 +121,7 @@ export default function Index() {
                       <span className="radio-btn">
                         <i className="las la-check"></i>
                         <div className="hobbies-icon">
-                          <div className="intervallyTyped" data-name="a">Just letting you know, we use cookies to make your experience on our site as awesome as possible. If you're okay with our delicious cookies, just keep browsing...</div>
+                          <div className="intervallyTyped" data-name="a">Just letting you know, we use cookies to make your experience on our site as awesome as possible. If you're okay with our delicious cookies...</div>
                           <h3>Personable Tone</h3>
                         </div>
                       </span>
@@ -145,7 +131,7 @@ export default function Index() {
                       <span className="radio-btn">
                         <i className="las la-check"></i>
                         <div className="hobbies-icon">
-                          <div className="intervallyTyped" data-name="b">We use cookies to enhance your experience on our website. By continuing to browse, you agree to our use of cookies. For more information on how we...</div>
+                          <div className="intervallyTyped" data-name="b">We use cookies to enhance your experience on our website. By continuing to browse, you agree to our use of cookies. For more...</div>
                           <h3>Business Tone</h3>
                         </div>
                       </span>
@@ -154,20 +140,15 @@ export default function Index() {
                 </div>
                 <input type="hidden" name="shopId" value={shopId.shop} />
               </RemixForm>
-
             </LegacyCard>
           </Layout.Section>
           <Layout.Section style={{ display: 'none' }} variant="oneThird">
             <LegacyCard title="Acceptance Rate per Country" sectioned>
-
               <DataTable
                 columnContentTypes={['text', 'numeric',]}
                 headings={['Country', 'Acceptance Rate']}
                 rows={rows}
               />
-
-
-
             </LegacyCard>
           </Layout.Section>
         </Layout>
