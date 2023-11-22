@@ -3,7 +3,7 @@ import {
   Layout,
   DataTable, LegacyCard, ContextualSaveBar, Frame
 } from "@shopify/polaris";
-import { authenticate } from "../shopify.server";
+import { authenticate, MONTHLY_PLAN_ROOKIE, MONTHLY_PLAN_BEGINNER } from "../shopify.server";
 import { Form as RemixForm, useActionData, useLoaderData } from "@remix-run/react";
 import { useTransition, useEffect, useState } from 'react';
 import { upsertShopDetails } from "./server_components/upsertShopDetails";
@@ -12,7 +12,7 @@ import { updateShopTemp } from "./server_components/updateShopTemp";
 
 
 export const loader = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, billing } = await authenticate.admin(request);
   const shop = admin.rest.session.shop;
   upsertShopDetails(shop)
   const shopSettings = await prisma.ShopCountryView.findMany({
@@ -20,6 +20,19 @@ export const loader = async ({ request }) => {
   });
   const tempSettings = await prisma.ShopSettings.findFirst({ where: { shopId: shop } })
   const temperature = tempSettings.temperature
+  upsertShopDetails(shop)
+
+
+  await billing.require({
+    plans: ([MONTHLY_PLAN_ROOKIE]),
+    isTest: true,
+    onFailure: async () => billing.request({ plan: (MONTHLY_PLAN_ROOKIE) }),
+  });
+
+
+
+
+
   return { shop, shopSettings, temperature }
 };
 
