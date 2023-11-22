@@ -26,6 +26,8 @@ model ShopSettings {
   temperature      Float             @default(0.25)
   shopId           String            @unique
   shopCountryViews ShopCountryView[]
+  url
+  onboarded
 }
 
 model ShopCountryView {
