@@ -3,7 +3,7 @@ import {
   Layout,
   DataTable, LegacyCard, ContextualSaveBar, Frame
 } from "@shopify/polaris";
-import { authenticate, MONTHLY_PLAN_ROOKIE, MONTHLY_PLAN_BEGINNER } from "../shopify.server";
+import { authenticate, MONTHLY_PLAN_ROOKIE } from "../shopify.server";
 import { Form as RemixForm, useActionData, useLoaderData } from "@remix-run/react";
 import { useTransition, useEffect, useState } from 'react';
 import { upsertShopDetails } from "./server_components/upsertShopDetails";
@@ -15,13 +15,13 @@ export const loader = async ({ request }) => {
   const { admin, billing } = await authenticate.admin(request);
   const shop = admin.rest.session.shop;
   upsertShopDetails(shop)
-  const shopSettings = await prisma.ShopCountryView.findMany({
+
+  const shopViews = await prisma.ShopCountryView.findMany({
     where: { shopId: shop },
   });
-  const tempSettings = await prisma.ShopSettings.findFirst({ where: { shopId: shop } })
-  const temperature = tempSettings.temperature
-  upsertShopDetails(shop)
 
+  const shopTempSettings = await prisma.ShopSettings.findFirst({ where: { shopId: shop } })
+  const temperature = shopTempSettings.temperature
 
   await billing.require({
     plans: ([MONTHLY_PLAN_ROOKIE]),
@@ -29,11 +29,7 @@ export const loader = async ({ request }) => {
     onFailure: async () => billing.request({ plan: (MONTHLY_PLAN_ROOKIE) }),
   });
 
-
-
-
-
-  return { shop, shopSettings, temperature }
+  return { shop, shopViews, temperature }
 };
 
 
@@ -81,7 +77,7 @@ export default function Index() {
     setHasUnsavedChanges(true);
   };
 
-  const rows = shopId.shopSettings.map(view => [
+  const rows = shopId.shopViews.map(view => [
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <img style={{ width: 30 + 'px' }} src={`https://flagsapi.com/${view.country}/shiny/64.png`} alt={`${view.country} flag`} />
       &nbsp; {view.country}
