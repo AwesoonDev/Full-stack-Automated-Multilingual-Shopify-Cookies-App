@@ -15,5 +15,7 @@ package-lock.json
 yarn.lock
 shopify.app.toml
 html
+app_listing.json
+
 
 .DS_Store

@@ -8,6 +8,21 @@ import {
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { restResources } from "@shopify/shopify-api/rest/admin/2023-10";
 import prisma from "./db.server";
+import { BillingInterval } from "@shopify/shopify-api";
+
+
+
+export const MONTHLY_PLAN_ROOKIE = '300 Monthly Visitors';
+export const MONTHLY_PLAN_BEGINNER = '1500 Monthly Visitors';
+export const MONTHLY_PLAN_ADVANCED = '6000 Monthly Visitors';
+export const MONTHLY_PLAN_VETERAN = 'Unlimited Visitors';
+export const ANNUAL_PLAN_ROOKIE = 'Rookie'
+export const ANNUAL_PLAN_BEGINNER = 'Beginner'
+export const ANNUAL_PLAN_ADVANCED = 'Advanced'
+export const ANNUAL_PLAN_VETERAN = 'Veteran'
+
+
+
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -37,9 +52,72 @@ const shopify = shopifyApp({
   ...(process.env.SHOP_CUSTOM_DOMAIN
     ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }
     : {}),
+
+  billing: {
+    [MONTHLY_PLAN_ROOKIE]: {
+      name: "Whats Good",
+      amount: 9,
+      currencyCode: 'USD',
+      trialDays: 3,
+      interval: BillingInterval.Every30Days,
+    },
+    [MONTHLY_PLAN_BEGINNER]: {
+      name: "Whats Good",
+      amount: 19,
+      currencyCode: 'USD',
+      trialDays: 3,
+      interval: BillingInterval.Every30Days,
+    }
+    ,
+    [MONTHLY_PLAN_ADVANCED]: {
+      amount: 49,
+      currencyCode: 'USD',
+      trialDays: 3,
+      interval: BillingInterval.Every30Days,
+    },
+    [MONTHLY_PLAN_VETERAN]: {
+
+      amount: 99,
+      currencyCode: 'USD',
+      trialDays: 3,
+      interval: BillingInterval.Every30Days,
+    },
+
+    [ANNUAL_PLAN_ROOKIE]: {
+      amount: 89,
+      currencyCode: 'USD',
+      trialDays: 3,
+      interval: BillingInterval.Annual,
+    }
+    ,
+    [ANNUAL_PLAN_BEGINNER]: {
+      amount: 199,
+      currencyCode: 'USD',
+      trialDays: 3,
+      interval: BillingInterval.Annual,
+    }
+    ,
+    [ANNUAL_PLAN_ADVANCED]: {
+      amount: 499,
+      currencyCode: 'USD',
+      trialDays: 3,
+      interval: BillingInterval.Annual,
+    }
+    ,
+    [ANNUAL_PLAN_VETERAN]: {
+      amount: 899,
+      currencyCode: 'USD',
+      trialDays: 3,
+      interval: BillingInterval.Annual,
+    },
+  }
+
 });
 
+
 export default shopify;
+
+
 export const apiVersion = LATEST_API_VERSION;
 export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
 export const authenticate = shopify.authenticate;
