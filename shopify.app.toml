@@ -2,7 +2,7 @@
 
 name = "gdpr-app-by-awesoon-inc"
 client_id = "fc7bdfa96b7f797704c7b962cf263b29"
-application_url = "https://brighton-integrated-prospective-election.trycloudflare.com"
+application_url = "https://enzyme-hint-nurse-foto.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,17 +11,17 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://brighton-integrated-prospective-election.trycloudflare.com/auth/callback",
-  "https://brighton-integrated-prospective-election.trycloudflare.com/auth/shopify/callback",
-  "https://brighton-integrated-prospective-election.trycloudflare.com/api/auth/callback",
-  "https://brighton-integrated-prospective-election.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://enzyme-hint-nurse-foto.trycloudflare.com/auth/callback",
+  "https://enzyme-hint-nurse-foto.trycloudflare.com/auth/shopify/callback",
+  "https://enzyme-hint-nurse-foto.trycloudflare.com/api/auth/callback",
+  "https://enzyme-hint-nurse-foto.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://brighton-integrated-prospective-election.trycloudflare.com"
+url = "https://enzyme-hint-nurse-foto.trycloudflare.com"
 subpath = "cookie_ray_sma_fa"
 prefix = "apps"
 

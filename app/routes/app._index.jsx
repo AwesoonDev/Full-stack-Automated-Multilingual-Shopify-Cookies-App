@@ -3,7 +3,7 @@ import {
   Layout,
   DataTable, LegacyCard, ContextualSaveBar, Frame
 } from "@shopify/polaris";
-import { authenticate } from "../shopify.server";
+import { authenticate, MONTHLY_PLAN_ROOKIE, MONTHLY_PLAN_BEGINNER } from "../shopify.server";
 import { Form as RemixForm, useActionData, useLoaderData } from "@remix-run/react";
 import { useTransition, useEffect, useState } from 'react';
 import { upsertShopDetails } from "./server_components/upsertShopDetails";
@@ -15,13 +15,26 @@ export const links = () => {
 };
 
 export const loader = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, billing } = await authenticate.admin(request);
   const shop = admin.rest.session.shop;
   const shopSettings = await prisma.ShopCountryView.findMany({
     where: { shopId: shop },
   });
   const tempSettings = await prisma.ShopSettings.findFirst({ where: { shopId: shop } })
   const temperature = tempSettings.temperature
+  upsertShopDetails(shop)
+
+
+  await billing.require({
+    plans: ([MONTHLY_PLAN_ROOKIE]),
+    isTest: true,
+    onFailure: async () => billing.request({ plan: (MONTHLY_PLAN_ROOKIE) }),
+  });
+
+
+
+
+
   return { shop, shopSettings, temperature }
 };
 
@@ -50,7 +63,6 @@ export const action = async ({ request }) => {
 
 export default function Index() {
   const shopId = useLoaderData();
-  upsertShopDetails(shopId.shop)
   const loadedTemperature = shopId.temperature
   const [temperature, setTemperature] = useState(loadedTemperature.toString());
   const transition = useTransition();

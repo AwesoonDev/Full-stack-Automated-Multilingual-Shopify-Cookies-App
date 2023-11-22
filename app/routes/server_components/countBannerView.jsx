@@ -4,24 +4,19 @@ import prisma from '../../db.server';
 import { fetchGeolocation } from './fetchGeolocation';
 
 export async function action({ request }) {
-  console.log("koskesh e kiri")
-  // Authenticate the request
   const storefront = await authenticate.public.appProxy(request);
   const requestBody = await request.json();
   const accepted = requestBody.accepted;
-
   const forwardedIps = request.headers.get('x-forwarded-for') || '';
   const clientIp = forwardedIps.split(',')[0].trim();
   const geoData = await fetchGeolocation(clientIp);
   let shopId = request.headers.get('x-shop-domain')
   let countryCode = geoData.countryCode;
-
   if (geoData.error) {
     return json({ error: geoData.error });
   }
 
 
-  // Check if a ShopCountryView for the given shopId and country already exists
   const existingShopCountryView = await prisma.ShopCountryView.findFirst({
     where: {
       shopId: shopId,
@@ -65,6 +60,31 @@ export async function action({ request }) {
         }
       }
     });
+  }
+
+  async function getTotalViewsForShopSinceBeginningOfMonth(shopId) {
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const totalViews = await prisma.ShopCountryView.aggregate({
+      _sum: {
+        viewCount: true,
+      },
+      where: {
+        shopId: shopId,
+        createdAt: {
+          gte: firstDayOfMonth,
+        },
+      },
+    });
+
+    return totalViews?._sum?.viewCount || 0;
+  }
+  const totalViews = await getTotalViewsForShopSinceBeginningOfMonth(shopId);
+  if (totalViews > 30) {
+    console.log("bishtar az 30 tas koskesh")
+  } else {
+    console.log("kamtare madareto gayidam")
   }
 
   return shopCountryView;
