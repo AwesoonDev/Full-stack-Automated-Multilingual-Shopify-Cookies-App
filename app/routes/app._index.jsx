@@ -14,6 +14,7 @@ import { updateShopTemp } from "./server_components/updateShopTemp";
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
   const shop = admin.rest.session.shop;
+  upsertShopDetails(shop)
   const shopSettings = await prisma.ShopCountryView.findMany({
     where: { shopId: shop },
   });
@@ -47,7 +48,6 @@ export const action = async ({ request }) => {
 
 export default function Index() {
   const shopId = useLoaderData();
-  upsertShopDetails(shopId.shop)
   const loadedTemperature = shopId.temperature
   const [temperature, setTemperature] = useState(loadedTemperature.toString());
   const transition = useTransition();
