@@ -110,3 +110,17 @@
   font-style: italic;
   opacity: .7;
 }
+
+/* onboarding images */
+.img-container {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  min-height: 10rem;
+}
+
+.plan-img {
+  max-width: 10rem;
+  height: auto;
+  aspect-ratio: 1;
+}
