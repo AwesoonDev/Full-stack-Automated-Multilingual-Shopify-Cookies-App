@@ -7,12 +7,9 @@ import { authenticate } from "../shopify.server";
 import { Form as RemixForm, useActionData, useLoaderData } from "@remix-run/react";
 import { useTransition, useEffect, useState } from 'react';
 import { upsertShopDetails } from "./server_components/upsertShopDetails";
-import stylesUrl from "~/styles/setup.css";
 import { updateShopTemp } from "./server_components/updateShopTemp";
 
-export const links = () => {
-  return [{ rel: "stylesheet", href: stylesUrl }];
-};
+
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
