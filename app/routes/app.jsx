@@ -21,6 +21,7 @@ export default function App() {
       <ui-nav-menu>
         <Link to="/app/additional">Settings</Link>
         <Link to="/app/onboarding">Onboarding</Link>
+        <Link to="/app/formerIndex">Former Index</Link>
       </ui-nav-menu>
       <Outlet />
     </AppProvider>

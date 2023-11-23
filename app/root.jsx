@@ -8,11 +8,18 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import stylesUrl from "~/styles/setup.css";
-import { useChangeLanguage } from "remix-i18next";
 import { useTranslation } from "react-i18next";
 import i18next from "~/i18next.server";
 import { json } from "@remix-run/node";
+import { useEffect } from "react";
 
+
+export function useChangeLanguage(locale) {
+  let { i18n } = useTranslation();
+  useEffect(() => {
+    i18n.changeLanguage(locale);
+  }, [locale, i18n]);
+}
 
 export async function loader({ request }) {
   let locale = await i18next.getLocale(request);
@@ -35,6 +42,7 @@ export default function App() {
   // Get the locale from the loader
   let { locale } = useLoaderData();
   let { i18n } = useTranslation();
+
 
   // This hook will change the i18n instance language to the current locale
   // detected by the loader, this way, when we do something to change the

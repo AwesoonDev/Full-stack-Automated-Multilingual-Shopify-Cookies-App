@@ -23,10 +23,9 @@ model Session {
 
 model ShopSettings {
   id               Int               @id @default(autoincrement())
-  temperature      Float             @default(.25)
   shopId           String            @unique
   shopCountryViews ShopCountryView[]
-  onboarded        Boolean           @default(false)
+  tone             String            @default("business")
 }
 
 model ShopCountryView {

@@ -10,9 +10,25 @@ import {
 } from "@shopify/polaris";
 import { ExternalMinor } from '@shopify/polaris-icons';
 import { Trans, useTranslation } from "react-i18next";
-import { useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
+import { authenticate } from "../shopify.server";
+import { useEffect } from "react";
 
 export let handle = { i18n: "common", };
+
+
+export const loader = async ({ request }) => {
+  const { admin } = await authenticate.admin(request);
+  const shop = admin.rest.session.shop;
+  const shopSettings = await prisma.ShopCountryView.findMany({
+    where: { shopId: shop },
+  });
+  const tempSettings = await prisma.ShopSettings.findFirst({ where: { shopId: shop } })
+  const temperature = tempSettings.temperature
+  console.log(shop, shopSettings)
+  return { shop, shopSettings, temperature }
+};
+
 
 export default function Onboarding() {
   return (
@@ -24,6 +40,7 @@ export default function Onboarding() {
 }
 
 const OnboardCard = ({ step }) => {
+  const loadedData = useLoaderData()
   const { t } = useTranslation()
   const navigate = useNavigate()
   function handleClick() {
@@ -31,7 +48,7 @@ const OnboardCard = ({ step }) => {
     switch(step) {
       case 1:
         console.log("hello 1")
-        navigate("https://www.google.com", {target: "new"})
+        navigate("/embed", {target: "new"})
     }
   }
 
@@ -67,8 +84,8 @@ const OnboardCard = ({ step }) => {
           <br />
           <InlineStack align="space-between">
             <InlineStack gap="500">
-              <Button>Back</Button>
-              <Link>Skip</Link>
+              <Button url="https://www.google.com" target="new">Back</Button>
+              <Link url="https://www.google.com" target="new">Skip</Link>
             </InlineStack>
             <Button>Next</Button>
           </InlineStack>
