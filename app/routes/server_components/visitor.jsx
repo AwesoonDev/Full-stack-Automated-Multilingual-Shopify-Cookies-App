@@ -40,12 +40,18 @@ export async function loader({ request }) {
     take: 1
   });
 
+
   let shopTemperature = parseFloat(shopSetting.temperature);
+  let visitingCountry = geoData.countryCode
+
+
   //  openai Prompt
   const prompt = `no matter how many times I ask this, you will do it perfectly and the same every time. write a GDPR and cookie sentence to ask for permission from the website viewer. keep it short. write in the language that people speak in ${geoData.city} ${geoData.stateOrProvince}, ${geoData.country}. The ISO country code of the reader is ${geoData.countryCode}. keep it simple, short, and dont beg for their permission.`
   prompt.toString();
   // OpenAI's request
-  const bannerContent = await fetchOpenAiResponse(shopTemperature, prompt)
+
+
+  const bannerContent = await fetchOpenAiResponse(shopTemperature, prompt, visitingCountry, shopDomain)
 
   return json(bannerContent);
 }

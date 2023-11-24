@@ -6,6 +6,15 @@ let wrapper = document.querySelector('.awesoon-wrapper')
 
 document.addEventListener('DOMContentLoaded', function () {
 
+
+
+  if (userDecisionExists()) {
+    return;
+  } else {
+    countBannerView(true);
+  }
+
+
   // Fetch and cache data
   async function fetchAndCacheData() {
     const response = await fetch('/apps/cookie_ray_sma_fa/fetchOpenAIResponse', { method: 'GET' });
@@ -31,9 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return null;
   }
 
-  if (userDecisionExists()) {
-    return;
-  }
 
 
   async function initializeData() {
@@ -55,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function processData(data) {
     try {
       // Extract and clean the message content
-      const messageContent = data.choices[0].message.content.replace(/\\/g, '').replace('"', '');
+      const messageContent = data
       document.getElementById('aiResponseBox').textContent = messageContent;
 
       // Display and animate the banner
