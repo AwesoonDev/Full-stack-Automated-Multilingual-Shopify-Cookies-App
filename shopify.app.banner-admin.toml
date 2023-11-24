@@ -2,7 +2,7 @@
 
 name = "banner-admin"
 client_id = "37df1e843ea819cd5d87d3860a9835bd"
-application_url = "https://heating-demand-integral-alliance.trycloudflare.com"
+application_url = "https://tracker-transaction-showing-timothy.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,10 +11,10 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://heating-demand-integral-alliance.trycloudflare.com/auth/callback",
-  "https://heating-demand-integral-alliance.trycloudflare.com/auth/shopify/callback",
-  "https://heating-demand-integral-alliance.trycloudflare.com/api/auth/callback",
-  "https://heating-demand-integral-alliance.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://tracker-transaction-showing-timothy.trycloudflare.com/auth/callback",
+  "https://tracker-transaction-showing-timothy.trycloudflare.com/auth/shopify/callback",
+  "https://tracker-transaction-showing-timothy.trycloudflare.com/api/auth/callback",
+  "https://tracker-transaction-showing-timothy.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]

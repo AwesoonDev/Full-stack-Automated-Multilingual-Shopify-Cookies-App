@@ -1,4 +1,5 @@
-export { default as cookie_1 } from "./cookie_1.svg";
-export { default as cookie_2 } from "./cookie_2.svg";
-export { default as cookie_3 } from "./cookie_3.svg";
-export { default as cookie_4 } from "./cookie_4.svg";
+export { default as rookie } from "./rookie.svg";
+export { default as beginner } from "./beginner.svg";
+export { default as advanced } from "./advanced.svg";
+export { default as veteran } from "./veteran.svg";
+export { default as mascot } from "./mascot.svg";
