@@ -14,14 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
     return JSON.parse(textResponse);
   }
 
-  // Cache the data with an expiration time of 7 days
   function cacheData(data) {
     localStorage.setItem('cachedBoolean', data);
     const sevenDaysLater = new Date().getTime() + (7 * 24 * 60 * 60 * 1000);
     localStorage.setItem('expirationTime', sevenDaysLater);
   }
 
-  // Get data from cache if available
   function getCachedData() {
     const cachedData = localStorage.getItem('cachedBoolean');
     const expirationTime = localStorage.getItem('expirationTime');
@@ -33,7 +31,11 @@ document.addEventListener('DOMContentLoaded', function () {
     return null;
   }
 
-  // Initialize and handle data
+  if (userDecisionExists()) {
+    return;
+  }
+
+
   async function initializeData() {
     const cachedData = getCachedData();
     if (cachedData) {
@@ -106,14 +108,46 @@ function fadeBanner() {
 }
 
 
+function setApprovalCookies() {
+  document.cookie = "userConsent=accepted; path=/; max-age=" + (60 * 60 * 24 * 365); // 1 year
+  console.log("Cookies and data settings set for approval");
+}
+
+
+function setRejectionCookies() {
+  document.cookie = "userConsent=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  console.log("Cookies and data settings set for rejection");
+}
+
+
+function userDecisionExists() {
+  const userDecision = localStorage.getItem('userDecision');
+  const decisionTime = localStorage.getItem('decisionTime');
+  const currentTime = new Date().getTime();
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+
+  return userDecision && decisionTime && (currentTime - decisionTime < thirtyDays);
+}
+
+function setUserDecision(decision) {
+  localStorage.setItem('userDecision', decision);
+  localStorage.setItem('decisionTime', new Date().getTime());
+}
+
+
+
 acceptTerms.addEventListener('click', async function () {
   console.log("Accepted Terms");
+  setApprovalCookies();
+  setUserDecision('accepted'); // Save user decision
   await countBannerView(true);
   fadeBanner();
 });
 
 rejectTerms.addEventListener('click', async function () {
   console.log("Rejected Terms");
+  setRejectionCookies();
+  setUserDecision('rejected'); // Save user decision
   await countBannerView(false);
   fadeBanner();
 });
