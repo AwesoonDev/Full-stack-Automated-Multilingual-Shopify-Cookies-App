@@ -3,30 +3,32 @@
 
 
 :root {
-  --background-color: white;
+  --background-color: {{ block.settings.banner_background_color }};
+  --background-before-color: {{ block.settings.banner_background_color }};
   --box-shadow-color: 0 0 25px rgba(0, 0, 0, 0.3);
-  --banner-image-background: url("{{ block.settings.image_with_text_image | image_url: width: 1080 }}");
   --centered-text: center;
   --left-text: left;
   --transition-ease-in-out: .3s ease-in-out;
   --button-background: radial-gradient(#0f6efd 0%, #4892dc 100%);
   --hover-button-scale: scale(0.99);
+  --text-color: {{ block.settings.banner_text_color }}
+  --button-text-color: {{ block.settings.button_text_color }};
 }
 
 {% assign backgroundImage = block.settings.image_with_text_image | image_url: width: 1080 %}
 
 {% if backgroundImage %}
-  <style>
+
     :root {
       --banner-image-background: url("{{ backgroundImage }}");
     }
-  </style>
+
 {% else %}
-  <style>
+
     :root {
-      --banner-image-background: url(https://cloudfront-us-east-2.images.arcpublishing.com/reuters/YM4YFGPDLZMXZCKETHRSXEGZIY.jpg);
+      --banner-image-background: url("https://cloudfront-us-east-2.images.arcpublishing.com/reuters/YM4YFGPDLZMXZCKETHRSXEGZIY.jpg");
     }
-  </style>
+
 {% endif %}
 
 {% endstyle %}
@@ -41,10 +43,8 @@
   <link rel="stylesheet" href="{{ "bottom_banner.css" | asset_url }}">
 {% endif %}
 
-
-
-
     <div class="awesoon-wrapper">
+
       <div class="banner">
         <div class="image-box"> </div>
         <div class="ai-response">
@@ -60,7 +60,7 @@
 <script src="{{ "fade_banner.js" | asset_url }}" defer></script>
  {% schema %}
       {
-        "name": "Crumble | Cookie/GDPR",
+        "name": "Biscuits | Cookie/GDPR",
         "target": "body",
         "settings": [
           {
@@ -99,6 +99,12 @@
             "id": "banner_text_color",
             "label": "Text Color",
             "default": "#080808"
+          },
+          {
+            "type": "color",
+            "id": "button_text_color",
+            "label": "Text Color",
+            "default": "#0f6efd"
           }
           
         ]

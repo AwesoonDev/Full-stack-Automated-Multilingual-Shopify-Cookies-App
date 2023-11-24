@@ -1,5 +1,12 @@
 {
-    "action1": "Embed Biscuits",
-    "step1": "Step 1 of 2",
-    "instruction1": "Adding Biscuits to your store is simple. Click the button below, then click <0>save</0> in your theme settings."
+    "embedAction": "Embed Biscuits",
+    "embedInstruction1": "Adding Biscuits to your store is simple. Click the button below, then click <0>save</0> in your theme settings.",
+    "embedInstruction2": "While you're there, make sure to match Biscuits to your store's color scheme and pick the style of banner that best suits you!",
+    "toneAction": "Pick a Tone",
+    "business": "Business",
+    "toneBusiness": "We use cookies to enhance your experience on our website. By continuing to browse, you agree to our use of cookies. For more...",
+    "personal": "Personal",
+    "tonePersonal": "Just letting you know, we use cookies to make your experience on our site as awesome as possible. If you're okay with our delicious cookies...",
+    "reviewAction": "Leave a Review",
+    "chatAction": "Check Out ChatUp"
 }
