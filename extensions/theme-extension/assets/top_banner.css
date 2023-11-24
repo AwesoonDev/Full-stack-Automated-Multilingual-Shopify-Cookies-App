@@ -85,7 +85,7 @@
 
 .awesoon-wrapper .buttons button {
   background: var(--button-background);
-  color: var(--text-color);
+  color: var(--button-text-color);
   width: 100%;
   padding: 1em;
   border-radius: 20px;
@@ -100,8 +100,8 @@
 
 .awesoon-wrapper .buttons button:nth-child(1) {
   background: transparent;
-  color: var(--button-text-color);
-  border: 1px solid #0f6efd;
+  color: var(--text-color);
+  border: 1px solid var(--text-color);
 }
 
 .awesoon-wrapper .buttons button:hover {
