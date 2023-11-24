@@ -34,6 +34,7 @@ model ShopCountryView {
   viewCount       Int          @default(0)
   acceptanceCount Int          @default(0) // New field to count acceptances
   shopId          String
+  bannerContent   String       @default("none")
   shop            ShopSettings @relation(fields: [shopId], references: [shopId])
   createdAt       DateTime     @default(now())
 }

@@ -80,7 +80,9 @@ export async function action({ request }) {
 
     return totalViews?._sum?.viewCount || 0;
   }
+
   const totalViews = await getTotalViewsForShopSinceBeginningOfMonth(shopId);
+
   if (totalViews > 30) {
     console.log("bishtar az 30 tas koskesh")
   } else {
