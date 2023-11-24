@@ -4,6 +4,7 @@ import polarisStyles from "@shopify/polaris/build/esm/styles.css";
 import { boundary } from "@shopify/shopify-app-remix/server";
 import { AppProvider } from "@shopify/shopify-app-remix/react";
 import { authenticate } from "../shopify.server";
+import { Trans } from "react-i18next";
 
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
@@ -19,9 +20,9 @@ export default function App() {
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
       <ui-nav-menu>
-        <Link to="/app/additional">Settings</Link>
-        <Link to="/app/onboarding">Onboarding</Link>
-        <Link to="/app/formerIndex">Former Index</Link>
+        <Link to="/app/billing">
+          <Trans i18nKey={"billingTitle"} />
+        </Link>
       </ui-nav-menu>
       <Outlet />
     </AppProvider>

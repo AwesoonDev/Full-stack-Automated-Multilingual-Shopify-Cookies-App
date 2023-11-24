@@ -1,12 +1,13 @@
 import { json } from "@remix-run/node"
-import { Form, Form as RemixForm, useActionData, useLoaderData } from "@remix-run/react";
-import { BlockStack, Button, Card, InlineGrid, Layout, Page, RadioButton, Text, useBreakpoints } from "@shopify/polaris"
+import { Form, useLoaderData } from "@remix-run/react";
+import { BlockStack, Button, Card, DataTable, InlineGrid, Layout, Page, RadioButton, Text, useBreakpoints } from "@shopify/polaris"
 import { authenticate } from "../shopify.server";
 import { Trans } from "react-i18next";
-import { cookie_1, cookie_2, cookie_3, cookie_4 } from "../images";
+import { rookie, beginner, advanced, veteran, mascot } from "../images";
 import { AppsMinor, StarFilledMinor, ConversationMinor } from '@shopify/polaris-icons';
 import { useEffect, useRef, useState, useTransition } from "react";
 import prisma from "../db.server";
+import { MONTHLY_PLAN_ROOKIE, PLAN_NAMES } from "../constants";
 
 
 export const loader = async ({ request }) => {
@@ -14,7 +15,6 @@ export const loader = async ({ request }) => {
     const shop = admin.rest.session.shop;
     const embed_url = `https://${shop}/admin/themes/current/editor?context=apps&activateAppId=${process.env.SHOPIFY_THEME_EXTENSION_ID}/${process.env.SHOPIFY_THEME_EXTENSION_NAME}`
     const shopSettings = await prisma.ShopSettings.findFirst({ where: { shopId: shop } })
-    console.log(shopSettings)
     let tone = "business"
     if (shopSettings) {
         tone = shopSettings?.tone || ""
@@ -27,7 +27,17 @@ export const loader = async ({ request }) => {
         })
     }
 
-    return json({ ok: true, shop: shop, embed_url: embed_url, tone: tone })
+    const shopViews = await prisma.ShopCountryView.findMany({
+        where: { shopId: shop },
+    });
+
+    await billing.require({
+        plans: PLAN_NAMES,
+        isTest: true,
+        onFailure: async () => billing.request({ plan: MONTHLY_PLAN_ROOKIE }),
+    });
+
+    return json({ ok: true, shop: shop, shopViews: shopViews, embed_url: embed_url, tone: tone })
 }
 
 
@@ -44,14 +54,9 @@ export const action = async ({ request }) => {
                 tone: values.tone
             }
         })
-        console.log("hello there")
-        console.log(setting)
     }
 
-    console.log("general kenobi")
-    console.log(values.tone)
-    console.log(values.shop)
-    return json({ok: true, shop: values?.shop, tone: values?.tone})
+    return null
 }
 
 
@@ -62,28 +67,44 @@ export default function Index() {
 
     const cookies = [
         <div className="img-container">
-            <img src={cookie_1} className="plan-img" />
+            <img src={veteran} className="plan-img" />
         </div>,
         <div className="img-container">
-            <img src={cookie_2} className="plan-img" />
+            <img src={advanced} className="plan-img" />
         </div>,
         <div className="img-container">
-            <img src={cookie_3} className="plan-img" />
+            <img src={beginner} className="plan-img" />
         </div>,
         <div className="img-container">
-            <img src={cookie_4} className="plan-img" />
-        </div>
+            <img src={rookie} className="plan-img" />
+        </div>,
+        <div className="img-container">
+            <img src={mascot} className="plan-img" />
+        </div>,
     ]
 
     const embedCard = <Card>
-        <InlineGrid columns={{ xs: 1, sm: ["oneThird", "twoThirds"] }} gap="500">
-            {cookies[0]}
-            <BlockStack gap="500" align="space-between" inlineAlign={xsOnly ? "start" : "end"}>
+        {
+            smUp &&
+            <InlineGrid columns={["oneThird", "twoThirds"]} gap="500" >
+                <div />
                 <Text variant="headingXl">
                     <Trans i18nKey={"embedAction"} />
                 </Text>
+            </InlineGrid>
+        }
+        <InlineGrid columns={{ xs: 1, sm: ["oneThird", "twoThirds"] }} gap="500" alignItems="center">
+            {cookies[0]}
+            <BlockStack gap="500" align="space-between" inlineAlign={xsOnly ? "start" : "end"}>
+                {
+                    xsOnly &&
+                    <Text variant="headingXl">
+                        <Trans i18nKey={"embedAction"} />
+                    </Text>
+                }
+                <br />
                 <Text variant="bodyLg">
-                    <Trans i18nKey={"embedInstruction1"} components={[<strong />]} />
+                    <Trans i18nKey={"embedInstruction1"} />
                 </Text>
                 <Text variant="bodyLg">
                     <Trans i18nKey={"embedInstruction2"} />
@@ -101,12 +122,24 @@ export default function Index() {
     </Card>
 
     const toneCard = <Card>
-        <InlineGrid columns={{ xs: 1, sm: ["twoThirds", "oneThird"] }} gap="500">
-            {xsOnly && cookies[1]}
-            <BlockStack gap="500" align="space-between">
+        {
+            smUp &&
+            <>
                 <Text variant="headingXl">
                     <Trans i18nKey={"toneAction"} />
                 </Text>
+                <br />
+            </>
+        }
+        <InlineGrid columns={{ xs: 1, sm: ["twoThirds", "oneThird"] }} gap="500" alignItems="center">
+            {xsOnly && cookies[1]}
+            <BlockStack gap="500" align="space-between">
+                {
+                    xsOnly &&
+                    <Text variant="headingXl">
+                        <Trans i18nKey={"toneAction"} />
+                    </Text>
+                }
                 <BlockStack>
                     <ToneForm />
                 </BlockStack>
@@ -115,56 +148,75 @@ export default function Index() {
         </InlineGrid >
     </Card >
 
-    const reviewCard = <Card>
-        <InlineGrid columns={{ xs: 1, sm: ["oneThird", "twoThirds"] }} gap="500">
-            {cookies[2]}
-            <BlockStack gap="500" align="space-between" inlineAlign={xsOnly ? "start" : "end"}>
-                <Text variant="headingXl">
-                    <Trans i18nKey={"reviewAction"} />
-                </Text>
-                <Text variant="bodyLg">
-                    <Trans i18nKey={"embedInstruction1"} components={[<strong />]} />
-                </Text>
-                <Text variant="bodyLg">
-                    <Trans i18nKey={"embedInstruction2"} />
-                </Text>
-                <Button
-                    icon={StarFilledMinor}
-                    variant="primary"
-                    size="large"
-                    url={loaderData.embed_url}
-                    target="new">
-                    <Trans i18nKey={"reviewAction"} />
-                </Button>
-            </BlockStack>
-        </InlineGrid>
-    </Card>
-
     const chatCard = <Card>
-        <InlineGrid columns={{ xs: 1, sm: ["twoThirds", "oneThird"] }} gap="500">
-            {xsOnly && cookies[3]}
-            <BlockStack gap="500" align="space-between" inlineAlign="start">
+        {
+            smUp &&
+            <InlineGrid columns={["oneThird", "twoThirds"]} gap="500">
+                <div />
                 <Text variant="headingXl">
                     <Trans i18nKey={"chatAction"} />
                 </Text>
+            </InlineGrid>
+        }
+        <InlineGrid columns={{ xs: 1, sm: ["oneThird", "twoThirds"] }} gap="500" alignItems="center">
+            {cookies[2]}
+            <BlockStack gap="500" align="space-between" inlineAlign={xsOnly ? "start" : "end"}>
+                {
+                    xsOnly &&
+                    <Text variant="headingXl">
+                        <Trans i18nKey={"chatAction"} />
+                    </Text>
+                }
+                <br />
                 <Text variant="bodyLg">
-                    <Trans i18nKey={"embedInstruction1"} components={[<strong />]} />
-                </Text>
-                <Text variant="bodyLg">
-                    <Trans i18nKey={"embedInstruction2"} />
+                    <Trans i18nKey={"chatInstruction"} />
                 </Text>
                 <Button
                     icon={ConversationMinor}
                     variant="primary"
                     size="large"
-                    url={loaderData.embed_url}
+                    url={"https://apps.shopify.com/chatup-ai-powered-live-chat"}
                     target="new">
                     <Trans i18nKey={"chatAction"} />
                 </Button>
             </BlockStack>
-            {smUp && cookies[3]}
         </InlineGrid>
     </Card>
+
+
+    const reviewCard = <Card>
+        {
+            smUp &&
+            <Text variant="headingXl">
+                <Trans i18nKey={"reviewAction"} />
+            </Text>
+        }
+        <InlineGrid columns={{ xs: 1, sm: ["twoThirds", "oneThird"] }} gap="500" alignItems="center">
+            {xsOnly && cookies[4]}
+            <BlockStack gap="500" align="space-between" inlineAlign="start">
+                {
+                    xsOnly &&
+                    <Text variant="headingXl">
+                        <Trans i18nKey={"reviewAction"} />
+                    </Text>
+                }
+                <br />
+                <Text variant="bodyLg">
+                    <Trans i18nKey={"reviewInstruction"} />
+                </Text>
+                <Button
+                    icon={StarFilledMinor}
+                    variant="primary"
+                    size="large"
+                    url={"https://apps.shopify.com/chatup-ai-powered-live-chat#adp-reviews"}
+                    target="new">
+                    <Trans i18nKey={"reviewAction"} />
+                </Button>
+            </BlockStack>
+            {smUp && cookies[4]}
+        </InlineGrid>
+    </Card>
+
 
 
     return (
@@ -174,15 +226,16 @@ export default function Index() {
                     <BlockStack gap="500">
                         {embedCard}
                         {toneCard}
-                        {reviewCard}
                         {chatCard}
+                        {reviewCard}
                     </BlockStack>
                 </Layout.Section>
                 <Layout.Section variant="oneThird">
                     <Card>
                         <Text variant="headingXl">
-                            Banner stats
+                            <Trans i18nKey={"statsTitle"} />
                         </Text>
+                        <BannerStats />
                     </Card>
                 </Layout.Section>
             </Layout>
@@ -192,8 +245,7 @@ export default function Index() {
 
 const ToneForm = () => {
     const loaderData = useLoaderData();
-    const actionData = useActionData();
-    const [tone, setTone] = useState(actionData?.tone ?? loaderData?.tone)
+    const [tone, setTone] = useState(loaderData.tone)
 
     return (
         <Form data-save-bar method="post">
@@ -234,41 +286,21 @@ const ToneForm = () => {
     )
 }
 
+const BannerStats = () => {
+    const loaderData = useLoaderData();
+    const rows = loaderData.shopViews.map(view => [
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <img style={{ width: 30 + 'px' }} src={`https://flagsapi.com/${view.country}/shiny/64.png`} alt={`${view.country} flag`} />
+            &nbsp; {view.country}
+        </div>,
+        `${Math.round((view.acceptanceCount) * 100 / (view.viewCount))}%`
+    ]);
 
-
-
-// <RemixForm method="post"
-// encType="application/x-www-form-urlencoded"
-// id="toneeratureForm"
-// data-save-bar
-// onClick="console.log('submit', new FormData(event.target)); event.preventDefault();">
-// <div className="main-container">
-//     <div className="radio-buttons" >
-//         <label className="custom-radio">
-//             <input type="radio" name="toneerature" value="business" defaultChecked={true} />
-//             <span className="radio-btn">
-//                 <i className="las la-check"></i>
-//                 <div className="hobbies-icon">
-//                     <div className="intervallyTyped" data-name="a">
-//                         {<Trans i18nKey={"toneBusiness"} />}
-//                     </div>
-//                     <h3>{<Trans i18nKey={"business"} />}</h3>
-//                 </div>
-//             </span>
-//         </label>
-//         <label className="custom-radio">
-//             <input type="radio" name="toneerature" value="personal" defaultChecked={false} />
-//             <span className="radio-btn">
-//                 <i className="las la-check"></i>
-//                 <div className="hobbies-icon">
-//                     <div className="intervallyTyped" data-name="b">
-//                         {<Trans i18nKey={"tonePersonal"} />}
-//                     </div>
-//                     <h3>{<Trans i18nKey={"personal"} />}</h3>
-//                 </div>
-//             </span>
-//         </label>
-//     </div>
-// </div>
-// <input type="hidden" name="shopId" value={""} />
-// </RemixForm>
+    return (
+        <DataTable
+            columnContentTypes={['text', 'numeric',]}
+            headings={['Country', 'Acceptance Rate']}
+            rows={rows}
+        />
+    )
+}
