@@ -10,7 +10,7 @@ export async function fetchOpenAiResponse(shopTemperature, prompt) {
 
   const bannerContent = await openai.chat.completions.create({
     model: 'gpt-4',
-    temperature: shopTemperature, // Adjust the temperature as needed
+    temperature: shopTemperature == "personal" ? 1.50 : 0.25, // Adjust the temperature as needed
     messages: [{
       role: 'user',
       content: prompt,
@@ -18,6 +18,5 @@ export async function fetchOpenAiResponse(shopTemperature, prompt) {
   });
   console.log(bannerContent)
   return bannerContent
-
 }
 

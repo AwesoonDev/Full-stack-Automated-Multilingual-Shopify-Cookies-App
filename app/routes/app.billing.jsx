@@ -1,7 +1,6 @@
-import { Badge, BlockStack, Box, Button, Card, Divider, InlineGrid, InlineStack, Page, Text } from "@shopify/polaris";
+import { Badge, BlockStack, Box, Button, Card, Divider, InlineGrid, InlineStack, Page, Spinner, Text } from "@shopify/polaris";
 import { Trans, useTranslation } from "react-i18next";
-import { PlanButton } from "./app.billing.planButton";
-import { PLAN_NAMES_DICT } from "../constants";
+import { PLAN_NAMES_DICT, BILLING_DICT } from "../constants";
 import {
     ChevronLeftMinor,
     ChevronRightMinor
@@ -9,6 +8,8 @@ import {
 import { advanced, beginner, rookie, veteran } from "../images";
 import { authenticate } from "../shopify.server";
 import { json } from "@remix-run/node";
+import { Form, useLoaderData, useNavigation } from "@remix-run/react";
+import { BillingInterval } from "@shopify/shopify-api";
 
 export const loader = async ({ request }) => {
     const { admin, session } = await authenticate.admin(request);
@@ -140,3 +141,48 @@ export const PaddedCell = ({ children, padding }) => {
         </Box>
     )
 }
+
+
+export const PlanButton = ({ name }) => {
+    const loaderData = useLoaderData()
+    const current = name == loaderData?.name
+    const navigation = useNavigation()
+    const busy = navigation.state == "submitting" && navigation.formData.get("plan") == name
+    const normal = !busy && !current
+    const redirecting = busy && !current
+
+    return (
+        <Form method="post">
+            <input type="hidden" name="plan" value={name} />
+            <Button
+                submit
+                disabled={current || busy}
+                primary
+                fullWidth
+                id="plan-button"
+            >
+                <div style={{ minHeight: "1.5rem", display: "flex", alignItems: "center" }}>
+                    {
+                        current && <Trans i18nKey={"currentPlan"} />
+                    }
+                    {
+                        normal && BILLING_DICT[name]?.interval === BillingInterval.Every30Days &&
+                        <Trans i18nKey={"xPerMonth"} values={{ x: BILLING_DICT[name]?.amount }} />
+                    }
+                    {
+                        normal && BILLING_DICT[name]?.interval === BillingInterval.Annual &&
+                        <Trans i18nKey={"xPerAnnum"} values={{ x: BILLING_DICT[name]?.amount }} />
+                    }
+                    {
+                        redirecting &&
+                        <InlineStack gap="100" blockAlign="center">
+                            <Spinner size="small" />
+                            <Trans i18nKey={"redirecting"} />
+                        </InlineStack>
+                    }
+                </div>
+            </Button>
+        </Form>
+    )
+}
+

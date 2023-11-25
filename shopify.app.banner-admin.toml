@@ -2,7 +2,7 @@
 
 name = "banner-admin"
 client_id = "37df1e843ea819cd5d87d3860a9835bd"
-application_url = "https://feof-sweet-asking-convicted.trycloudflare.com"
+application_url = "https://spirits-locally-performances-pos.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,10 +11,10 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://feof-sweet-asking-convicted.trycloudflare.com/auth/callback",
-  "https://feof-sweet-asking-convicted.trycloudflare.com/auth/shopify/callback",
-  "https://feof-sweet-asking-convicted.trycloudflare.com/api/auth/callback",
-  "https://feof-sweet-asking-convicted.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://spirits-locally-performances-pos.trycloudflare.com/auth/callback",
+  "https://spirits-locally-performances-pos.trycloudflare.com/auth/shopify/callback",
+  "https://spirits-locally-performances-pos.trycloudflare.com/api/auth/callback",
+  "https://spirits-locally-performances-pos.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
