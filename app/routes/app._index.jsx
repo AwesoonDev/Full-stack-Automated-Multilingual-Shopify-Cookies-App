@@ -246,6 +246,15 @@ export default function Index() {
 const ToneForm = () => {
     const loaderData = useLoaderData();
     const [tone, setTone] = useState(loaderData.tone)
+    const [init, setInit] = useState(loaderData.tone)
+
+    onreset = () => {
+        setTone(init)
+    }
+
+    onsubmit = () => {
+        setInit(tone)
+    }
 
     return (
         <Form data-save-bar method="post">

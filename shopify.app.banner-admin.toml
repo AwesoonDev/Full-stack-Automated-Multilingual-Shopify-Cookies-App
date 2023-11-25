@@ -2,7 +2,7 @@
 
 name = "banner-admin"
 client_id = "37df1e843ea819cd5d87d3860a9835bd"
-application_url = "https://spirits-locally-performances-pos.trycloudflare.com"
+application_url = "https://beta-designed-handbags-wt.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,10 +11,10 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://spirits-locally-performances-pos.trycloudflare.com/auth/callback",
-  "https://spirits-locally-performances-pos.trycloudflare.com/auth/shopify/callback",
-  "https://spirits-locally-performances-pos.trycloudflare.com/api/auth/callback",
-  "https://spirits-locally-performances-pos.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://beta-designed-handbags-wt.trycloudflare.com/auth/callback",
+  "https://beta-designed-handbags-wt.trycloudflare.com/auth/shopify/callback",
+  "https://beta-designed-handbags-wt.trycloudflare.com/api/auth/callback",
+  "https://beta-designed-handbags-wt.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
