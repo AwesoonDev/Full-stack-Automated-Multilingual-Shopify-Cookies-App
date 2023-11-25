@@ -5,7 +5,7 @@ import { authenticate } from "../shopify.server";
 import { Trans } from "react-i18next";
 import { rookie, beginner, advanced, veteran, mascot } from "../images";
 import { AppsMinor, StarFilledMinor, ConversationMinor } from '@shopify/polaris-icons';
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useState } from "react";
 import prisma from "../db.server";
 import { MONTHLY_PLAN_ROOKIE, PLAN_NAMES } from "../constants";
 
