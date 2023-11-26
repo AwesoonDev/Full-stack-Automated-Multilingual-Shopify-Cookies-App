@@ -11,7 +11,7 @@ export const loader = async ({ request }) => {
     return json({ ok: true })
 }
 
-export default function empty() {
+export default function App() {
     return (
         <div>
             empty
