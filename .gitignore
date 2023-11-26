@@ -20,3 +20,4 @@ app_listing.json
 
 .DS_Store
 shopify.app.toml
+shopify.app.banner-admin.toml

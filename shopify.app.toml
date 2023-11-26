@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-name = "gdpr-app-by-awesoon-inc"
+name = "Biscuits, GDPR & Cookie Banner"
 client_id = "fc7bdfa96b7f797704c7b962cf263b29"
-application_url = "https://router-progress-charter-tiger.trycloudflare.com"
+application_url = "https://biscuit.awesoon.tech"
 embedded = true
 
 [access_scopes]
@@ -11,17 +11,22 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://router-progress-charter-tiger.trycloudflare.com/auth/callback",
-  "https://router-progress-charter-tiger.trycloudflare.com/auth/shopify/callback",
-  "https://router-progress-charter-tiger.trycloudflare.com/api/auth/callback",
-  "https://router-progress-charter-tiger.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://biscuit.awesoon.tech/auth/callback",
+  "https://biscuit.awesoon.tech/auth/shopify/callback",
+  "https://biscuit.awesoon.tech/api/auth/callback",
+  "https://biscuit.awesoon.tech/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
+  [webhooks.privacy_compliance]
+  customer_deletion_url = "https://biscuit.awesoon.tech/webhooks"
+  customer_data_request_url = "https://biscuit.awesoon.tech/webhooks"
+  shop_deletion_url = "https://biscuit.awesoon.tech/webhooks"
+
 [app_proxy]
-url = "https://router-progress-charter-tiger.trycloudflare.com"
+url = "https://biscuit.awesoon.tech/"
 subpath = "cookie_ray_sma_fa"
 prefix = "apps"
 
@@ -29,5 +34,5 @@ prefix = "apps"
 embedded = false
 
 [build]
-automatically_update_urls_on_dev = true
-dev_store_url = "chatup-demo.myshopify.com"
+automatically_update_urls_on_dev = false
+dev_store_url = "scan-test.myshopify.com"
