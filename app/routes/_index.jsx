@@ -1,3 +1,4 @@
+import { useRouteError } from "@remix-run/react";
 import { authenticate } from "../shopify.server"
 import { boundary } from '@shopify/shopify-app-remix/server';
 
