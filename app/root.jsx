@@ -1,4 +1,5 @@
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
@@ -6,13 +7,18 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRouteError,
 } from "@remix-run/react";
 import stylesUrl from "~/styles/setup.css";
-import { useTranslation } from "react-i18next";
+import polarisStyles from "@shopify/polaris/build/esm/styles.css";
+import { Trans, useTranslation } from "react-i18next";
 import i18next from "~/i18next.server";
 import { json } from "@remix-run/node";
 import { useEffect } from "react";
-
+import { boundary } from "@shopify/shopify-app-remix";
+import { AppProvider } from "@shopify/polaris";
+import { authenticate } from "./shopify.server";
+import { NavigationMenu } from "@shopify/app-bridge-react";
 
 export function useChangeLanguage(locale) {
   let { i18n } = useTranslation();
@@ -23,7 +29,8 @@ export function useChangeLanguage(locale) {
 
 export async function loader({ request }) {
   let locale = await i18next.getLocale(request);
-  return json({ locale });
+  await authenticate.admin(request);
+  return json({ apiKey: process.env.SHOPIFY_API_KEY || "", locale });
 }
 
 export let handle = {
@@ -35,13 +42,13 @@ export let handle = {
 };
 
 export const links = () => {
-  return [{ rel: "stylesheet", href: stylesUrl }];
+  return [{ rel: "stylesheet", href: stylesUrl }, { rel: "stylesheet", href: polarisStyles }];
 };
 
 export default function App() {
   // Get the locale from the loader
-  let { locale } = useLoaderData();
-  let { i18n } = useTranslation();
+  let { apiKey, locale } = useLoaderData();
+  let { t, i18n } = useTranslation();
 
 
   // This hook will change the i18n instance language to the current locale
@@ -59,11 +66,23 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <AppProvider isEmbeddedApp apiKey={apiKey}>
+          <Outlet />
+        </AppProvider>
         <ScrollRestoration />
         <LiveReload />
         <Scripts />
       </body>
-    </html>
+    </html >
   );
 }
+
+
+// Shopify needs Remix to catch some thrown responses, so that their headers are included in the response.
+export function ErrorBoundary() {
+  return boundary.error(useRouteError());
+}
+
+export const headers = (headersArgs) => {
+  return boundary.headers(headersArgs);
+};
