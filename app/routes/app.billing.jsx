@@ -75,8 +75,10 @@ const PlanContent = ({ plan, src, left, right }) => {
                     <Text variant="headingXl">
                         <Trans i18nKey={`${plan}`} />
                     </Text>
-                    <Badge size="small" tone="success">
+                    <Badge tone="success" size="small">
+                    {/* <div className="cookie-badge" > */}
                         <Trans i18nKey={"freeTrial"} />
+                    {/* </div> */}
                     </Badge>
                 </InlineStack>
                 <Button disabled={!right} icon={right ? ChevronRightMinor : false} onClick={() => handleRight()}></Button>
@@ -95,17 +97,21 @@ const PlanContent = ({ plan, src, left, right }) => {
             <br />
             <Divider />
             <br />
-            <InlineGrid columns="2" gap="400">
+            <InlineGrid columns="2" gap="400" alignItems="center">
                 <BlockStack>
+                    {/* <div className="cookie-badge" > */}
                     <Text alignment="center" fontWeight="bold">
                         <Trans i18nKey={`${plan}Monthly`} />
                     </Text>
+                    {/* </div> */}
                     <PlanButton name={PLAN_NAMES_DICT[`${plan}_monthly`]} />
                 </BlockStack>
                 <BlockStack>
+                    {/* <div className="cookie-badge" > */}
                     <Text alignment="center" fontWeight="bold">
                         <Trans i18nKey={`${plan}Annual`} />
                     </Text>
+                    {/* </div> */}
                     <PlanButton name={PLAN_NAMES_DICT[`${plan}_annual`]} />
                 </BlockStack>
             </InlineGrid>

@@ -153,9 +153,16 @@
   aspect-ratio: 1;
 }
 
+#chatup-logo {
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, .3);
+}
+
 
 /* Billing Page: Choose Plan button decoration */
 #plan-button {
+  color: #54241b;
+  background-color: #eeaf5a;
   border-radius: 10px 10px 10px 0px;
 }
 
@@ -336,3 +343,10 @@
 }
 
 
+.cookie-badge {
+  align-self: center;
+  color: #54241b;
+  background-color: #eeaf5a;
+  border-radius: 25px;
+  padding: 0 0.5rem
+}
