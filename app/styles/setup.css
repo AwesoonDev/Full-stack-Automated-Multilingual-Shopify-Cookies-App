@@ -155,7 +155,8 @@
 
 #chatup-logo {
   border-radius: 20px;
-  box-shadow: rgba(0, 0, 0, .3);
+  box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+  width: 100%;
 }
 
 
