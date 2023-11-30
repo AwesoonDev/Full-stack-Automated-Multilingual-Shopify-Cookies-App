@@ -63,7 +63,7 @@ export const action = async ({ request }) => {
 export default function Index() {
     const loaderData = useLoaderData()
     const { xsOnly, smUp } = useBreakpoints()
-    
+
     const embedCard = <Card>
         {
             smUp &&
