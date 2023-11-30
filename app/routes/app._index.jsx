@@ -33,7 +33,6 @@ export const loader = async ({ request }) => {
 
     await billing.require({
         plans: PLAN_NAMES,
-        isTest: true,
         onFailure: async () => billing.request({ plan: MONTHLY_PLAN_ROOKIE }),
     });
 
@@ -64,7 +63,7 @@ export const action = async ({ request }) => {
 export default function Index() {
     const loaderData = useLoaderData()
     const { xsOnly, smUp } = useBreakpoints()
-    
+
     const embedCard = <Card>
         {
             smUp &&
