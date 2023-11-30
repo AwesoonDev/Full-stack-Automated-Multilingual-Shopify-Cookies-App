@@ -33,8 +33,7 @@ export const loader = async ({ request }) => {
 
     await billing.require({
         plans: PLAN_NAMES,
-        isTest: true,
-        onFailure: async () => billing.request({ plan: MONTHLY_PLAN_ROOKIE }),
+        onFailure: async () => billing.request({ isTest: false, plan: MONTHLY_PLAN_ROOKIE }),
     });
 
     return json({ ok: true, shop: shop, shopViews: shopViews, embed_url: embed_url, tone: tone })

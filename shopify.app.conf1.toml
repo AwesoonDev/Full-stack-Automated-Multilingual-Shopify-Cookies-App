@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "ray-es-idiota-grande"
+client_id = "ba9cc9919cef94ef726c6a034bacf20e"
+application_url = "https://lined-blake-nightlife-exact.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://lined-blake-nightlife-exact.trycloudflare.com/auth/callback",
+  "https://lined-blake-nightlife-exact.trycloudflare.com/auth/shopify/callback",
+  "https://lined-blake-nightlife-exact.trycloudflare.com/api/auth/callback",
+  "https://lined-blake-nightlife-exact.trycloudflare.com/.shopify/graphiql/auth/callback"
+]
+
+[webhooks]
+api_version = "2023-10"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "scan-test.myshopify.com"

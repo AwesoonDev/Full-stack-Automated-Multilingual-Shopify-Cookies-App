@@ -23,7 +23,7 @@ export const action = async ({ request }) => {
     const values = Object.fromEntries(formData)
     if (values?.plan) {
         const { billing } = await authenticate.admin(request);
-        await billing.request({ plan: values?.plan })
+        await billing.request({ isTest: false,  plan: values?.plan })
     }
 
     return null
