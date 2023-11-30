@@ -3,7 +3,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { BlockStack, Button, Card, DataTable, InlineGrid, Layout, Page, RadioButton, Text, useBreakpoints } from "@shopify/polaris"
 import { authenticate } from "../shopify.server";
 import { Trans } from "react-i18next";
-import { rookie, beginner, advanced, veteran, mascot } from "../images";
+import { rookie, beginner, advanced, veteran, mascot, english } from "../images";
 import { AppsMinor, StarFilledMinor, ConversationMinor } from '@shopify/polaris-icons';
 import { useState } from "react";
 import prisma from "../db.server";
@@ -64,25 +64,7 @@ export const action = async ({ request }) => {
 export default function Index() {
     const loaderData = useLoaderData()
     const { xsOnly, smUp } = useBreakpoints()
-
-    const cookies = [
-        <div className="img-container">
-            <img src={veteran} className="plan-img" />
-        </div>,
-        <div className="img-container">
-            <img src={advanced} className="plan-img" />
-        </div>,
-        <div className="img-container">
-            <img src={beginner} className="plan-img" />
-        </div>,
-        <div className="img-container">
-            <img src={rookie} className="plan-img" />
-        </div>,
-        <div className="img-container">
-            <img src={mascot} className="plan-img" />
-        </div>,
-    ]
-
+    
     const embedCard = <Card>
         {
             smUp &&
@@ -94,7 +76,9 @@ export default function Index() {
             </InlineGrid>
         }
         <InlineGrid columns={{ xs: 1, sm: ["oneThird", "twoThirds"] }} gap="500" alignItems="center">
-            {cookies[0]}
+            <div className="img-container">
+                <img src={veteran} className="plan-img" />
+            </div>
             <BlockStack gap="500" align="space-between" inlineAlign={xsOnly ? "start" : "end"}>
                 {
                     xsOnly &&
@@ -121,6 +105,9 @@ export default function Index() {
         </InlineGrid>
     </Card>
 
+    const toneImage = <div className="img-container">
+        <img src={advanced} className="plan-img" />
+    </div>
     const toneCard = <Card>
         {
             smUp &&
@@ -132,7 +119,7 @@ export default function Index() {
             </>
         }
         <InlineGrid columns={{ xs: 1, sm: ["twoThirds", "oneThird"] }} gap="500" alignItems="center">
-            {xsOnly && cookies[1]}
+            {xsOnly && toneImage}
             <BlockStack gap="500" align="space-between">
                 {
                     xsOnly &&
@@ -144,7 +131,7 @@ export default function Index() {
                     <ToneForm />
                 </BlockStack>
             </BlockStack>
-            {smUp && cookies[1]}
+            {smUp && toneImage}
         </InlineGrid >
     </Card >
 
@@ -159,7 +146,9 @@ export default function Index() {
             </InlineGrid>
         }
         <InlineGrid columns={{ xs: 1, sm: ["oneThird", "twoThirds"] }} gap="500" alignItems="center">
-            {cookies[2]}
+            <div className="img-container">
+                <img src={english} className="plan-img" id="chatup-logo" />
+            </div>
             <BlockStack gap="500" align="space-between" inlineAlign={xsOnly ? "start" : "end"}>
                 {
                     xsOnly &&
@@ -183,7 +172,9 @@ export default function Index() {
         </InlineGrid>
     </Card>
 
-
+    const mascotImage = <div className="img-container">
+        <img src={mascot} className="plan-img" />
+    </div>
     const reviewCard = <Card>
         {
             smUp &&
@@ -192,7 +183,7 @@ export default function Index() {
             </Text>
         }
         <InlineGrid columns={{ xs: 1, sm: ["twoThirds", "oneThird"] }} gap="500" alignItems="center">
-            {xsOnly && cookies[4]}
+            {xsOnly && mascotImage}
             <BlockStack gap="500" align="space-between" inlineAlign="start">
                 {
                     xsOnly &&
@@ -208,12 +199,12 @@ export default function Index() {
                     icon={StarFilledMinor}
                     variant="primary"
                     size="large"
-                    url={"https://apps.shopify.com/chatup-ai-powered-live-chat#adp-reviews"}
+                    url={"https://apps.shopify.com/gdpr-app-by-awesoon-inc#adp-reviews"}
                     target="new">
                     <Trans i18nKey={"reviewAction"} />
                 </Button>
             </BlockStack>
-            {smUp && cookies[4]}
+            {smUp && mascotImage}
         </InlineGrid>
     </Card>
 
